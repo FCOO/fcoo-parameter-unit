@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="da" style="font-size: 100%">
+<head>
+	<title>fcoo.dk - fcoo-parameter-unit - Demo</title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv='x-dns-prefetch-control' content='on'>
+
+	<meta name='copyright' content='FCOO'>
+	<meta name='owner' content='FCOO'>
+
+    <!-- <link  href="bower_components.css" rel="stylesheet">    -->
+</head>
+
+<body>
+    <script src="bower_components.js"></script>
+	<script src="../src/fcoo-parameter-unit.js"></script>
+	<script>
+        window.fcoo.LOCAL_DATA = true;
+        //window.fcoo.DEMO_VERSION = true;
+
+        Promise.defaultErrorHandler = function(e){ console.log('Error', e); };
+
+        i18next.changeLanguage('da');
+
+        
+    $(function() {
+        //Check against standard names 
+        fcoo.promiseList.appendLast({
+            fileName: {subDir: 'parameter-unit', fileName: 'cf-standard-name-table.xml'},
+            format : 'XML',
+            resolve : function(data){
+                console.log('cf_standard', data);
+                console.log('fcoo.parameter', fcoo.parameter);
+                $.each(fcoo.parameter, function(id, opt){
+                    var cf = data.getElementById(id);
+
+                    if (!cf && opt.type && (opt.standard !== false))
+                        console.log('Ikke standard:',id, opt);
+                });
+            }
+        });
+
+
+        fcoo.promiseList.options.finally = function(){
+            fcoo.globalSetting.load(null, function(){;
+
+                console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm s-1', 'km h-1') + ' '+ i18next.t('unit:km h-1') );
+                console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm s-1', 'nm h-1') + ' '+ i18next.t('unit:nm h-1') );
+                console.log("i18next.t('unit:1') => ", i18next.t('unit:1'));
+
+                document.write('<table border="1"><tR><th>Id</th><th>Navn og enhed</th><th>Name and Unit</th><th>12.345678</th><th>As SI-unit</th></tr>');
+                $.each(fcoo.parameter, function(id, param){
+                    if (param.type){
+                        document.write('<tr><td>'+param.id+'</td>');
+                        i18next.changeLanguage('da');
+                        document.write('<td>'+ param.translate(true)+'</td>');
+                        i18next.changeLanguage('en');
+                        document.write('<td>'+ param.translate(true)+'</td>');
+                        document.write('<td>'+ param.format(12.345678, true)+'</td>');
+                        if (param.unit.SI_unit)
+                            document.write('<td>'+ param.format(12.345678, true, param.unit.SI_unit)+'</td>');
+                        else
+                            document.write('<td>&nbsp;</td>');
+
+                    }
+                });
+                document.write('</table>');
+            });
+        };
+
+        fcoo.promiseList.promiseAll();
+    });
+
+    
+    </script>
+</body>
+</html>
