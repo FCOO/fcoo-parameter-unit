@@ -1,12 +1,9 @@
 # fcoo-parameter-unit
->
+
 
 
 ## Description
-Subset of [CF Standard Names](https://cfconventions.org/standard-names.html) from [CF Conventions and Metadata](https://cfconventions.org/index.html) of parameters and subset of [MANGLER](http://mangler.dk) of units used in FCOO applications. 
-
-Also includes methods for unit conversion
-
+Subset of [CF Standard Names](https://cfconventions.org/standard-names.html) from [CF Conventions and Metadata](https://cfconventions.org/index.html) of parameters and subset of [UDUNITS](https://www.unidata.ucar.edu/software/udunits) of units used in FCOO applications. 
 
 
 ## Installation
@@ -14,7 +11,7 @@ Also includes methods for unit conversion
 `bower install https://github.com/FCOO/fcoo-parameter-unit.git --save`
 
 ## Demo
-http://FCOO.github.io/fcoo-parameter-unit/demo/
+http://FCOO.github.io/fcoo-parameter-unit/demo/ (NOT WORKING)
 
 ## Usage
 
@@ -27,19 +24,40 @@ Contain both standard CF scalar parameter and "vector"-parameter with two parame
     PARAMETER = {
         name    : STRING or {da: STRING, en: STRING}. The name of the parameter
         type    : STRING. "scalar" or "vector". Default "scalar"
+        group   : STRING. See below
         standard: BOOLEAN. true if it is a CF-parameter. Default true
+        speed_direction   : [CF_SN_ID, CF_SN_ID]. Only for type="vector": The speed and direction component
         eastward_northward: [CF_SN_ID, CF_SN_ID]. Only for type="vector": The east- and westward component
+        description: STRING. (Optional)
     },
+
+#### Parameter Group
+Each parameter must be in one of the following groups. The groups divides the parameter in domains (space, air, sea etc.) but also in expected relation to different forecast models (Sea Level models, Wave models, Ice models)
+
+- `"ASTRO"` - Sun, moon (Solar angle, Moon phases etc.)
+- `"METEO"` - All meteorological parameter 
+- `"WIND"`  - Subgroup of "METEO"
+- `"CLOUD"` - Subgroup of "METEO"
+- `"ILLUM"` - Illumination
+- `"OCEAN"` - All oceanographic paramater
+- `"SEALEVEL"` - Subgroup of "OCEAN"
+- `"HYDRO"` - Subgroup of "OCEAN" (Temperature, Salinity, Speed of Sound etc.) 
+- `"CURRENT"` - Subgroup of "OCEAN"
+- `"WAVE"`  - Surface wave
+- `"ICE"` - Ice on the sea
+
 
 #### Example
     "sea_water_speed": {
         "name": {"da": "Strømhastighed", "en": "Current Speed"},
+        "group": "CURRENT",
         "unit": "m s-1"
     },
 
     "sea_water_velocity": {
         "name": {"da": "Strøm", "en": "Current"},
         "type": "vector",
+        "group": "CURRENT",
         "standard"  : false,
         "eastward_northward": ["eastward_sea_water_velocity", "northward_sea_water_velocity"],
         "speed_direction": ["sea_water_speed", "sea_water_velocity_to_direction"]
