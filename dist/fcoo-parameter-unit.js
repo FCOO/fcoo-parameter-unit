@@ -34,6 +34,7 @@
     function Unit(id, options){
         this.id         = id;
         this.name       = options.name || '';
+        this.group      = options.group || 'METRO';
         this.decimals   = options.decimals || 0;
         this.noSpace    = options.noSpace || false;
         this.SI_unit    = options.SI_unit  || null;
