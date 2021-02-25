@@ -34,7 +34,6 @@
     function Unit(id, options){
         this.id         = id;
         this.name       = options.name || '';
-        this.group      = options.group || 'METRO';
         this.decimals   = options.decimals || 0;
         this.noSpace    = options.noSpace || false;
         this.SI_unit    = options.SI_unit  || null;
@@ -111,6 +110,7 @@
     function Parameter(id, options){
         options = $.extend(true, {
             name    : id,
+            group   : 'METRO',
             type    : "scalar",
             decimals: -1,   //= unknown
             standard: true,
@@ -120,6 +120,7 @@
 
         this.id         = id;
         this.name       = adjustText(options.name);
+        this.group      = options.group;
         this.decimals   = options.decimals;
         this.type       = options.type;
         this.standard   = options.standard;
