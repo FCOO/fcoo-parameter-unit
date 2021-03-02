@@ -175,6 +175,10 @@
         }
     };
 
+    //Create methods direct in namespace
+    nsParameter.getParameter = function(idOrParameter){
+        return typeof idOrParameter == 'string' ? nsParameter[idOrParameter] : idOrParameter;
+    };
 
     //Load parameter
     ns.promiseList.append({

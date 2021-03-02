@@ -38147,7 +38147,7 @@ if (typeof define === 'function' && define.amd) {
           var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
           var hasDefaultValue = Translator.hasDefaultValue(options);
           var defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count) : '';
-          var defaultValue = options["defaultValue".concat(defaultValueSuffix)];
+          var defaultValue = options["defaultValue".concat(defaultValueSuffix)] || options.defaultValue;
 
           if (!this.isValidLookup(res) && hasDefaultValue) {
             usedDefault = true;
@@ -38198,7 +38198,7 @@ if (typeof define === 'function' && define.amd) {
               if (this.options.saveMissingPlurals && needsPluralHandling) {
                 lngs.forEach(function (language) {
                   _this2.pluralResolver.getSuffixes(language).forEach(function (suffix) {
-                    send([language], key + suffix, options["defaultValue".concat(suffix)]);
+                    send([language], key + suffix, options["defaultValue".concat(suffix)] || defaultValue);
                   });
                 });
               } else {
