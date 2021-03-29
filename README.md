@@ -3,7 +3,7 @@
 
 
 ## Description
-Subset of [CF Standard Names](https://cfconventions.org/standard-names.html) from [CF Conventions and Metadata](https://cfconventions.org/index.html) of parameters and subset of [UDUNITS](https://www.unidata.ucar.edu/software/udunits) of units used in FCOO applications. 
+Subset of [CF Standard Names](https://cfconventions.org/standard-names.html) from [CF Conventions and Metadata](https://cfconventions.org/index.html) of parameters and subset of [UDUNITS](https://www.unidata.ucar.edu/software/udunits) of units used in FCOO applications.
 
 
 ## Installation
@@ -16,8 +16,8 @@ http://FCOO.github.io/fcoo-parameter-unit/demo/ (NOT WORKING)
 ## Usage
 
 ### `cf_sn_parameter.json`
-List of all parametre used in FCOOs web-application. 
-Contain both standard CF scalar parameter and "vector"-parameter with two parameter `[eastward, westward]` and/or `[speed, direction]` 
+List of all parametre used in FCOOs web-application.
+Contain both standard CF scalar parameter and "vector"-parameter with two parameter `[eastward, westward]` and/or `[speed, direction]`
 
 #### Format
     {CF_SN_ID:PARAMETER}
@@ -35,13 +35,13 @@ Contain both standard CF scalar parameter and "vector"-parameter with two parame
 Each parameter must be in one of the following groups. The groups divides the parameter in domains (space, air, sea etc.) but also in expected relation to different forecast models (Sea Level models, Wave models, Ice models)
 
 - `"ASTRO"` - Sun, moon (Solar angle, Moon phases etc.)
-- `"METEO"` - All meteorological parameter 
+- `"METEO"` - All meteorological parameter
 - `"WIND"`  - Subgroup of "METEO"
 - `"CLOUD"` - Subgroup of "METEO"
 - `"ILLUM"` - Illumination
 - `"OCEAN"` - All oceanographic paramater
 - `"SEALEVEL"` - Subgroup of "OCEAN"
-- `"HYDRO"` - Subgroup of "OCEAN" (Temperature, Salinity, Speed of Sound etc.) 
+- `"HYDRO"` - Subgroup of "OCEAN" (Temperature, Salinity, Speed of Sound etc.)
 - `"CURRENT"` - Subgroup of "OCEAN"
 - `"WAVE"`  - Surface wave
 - `"ICE"` - Ice on the sea
@@ -64,12 +64,13 @@ Each parameter must be in one of the following groups. The groups divides the pa
     },
 
 ### `cf_sn_unit.json`
-List of all units used in FCOOs web-application. 
+List of all units used in FCOOs web-application.
 
 #### Format
     {UNIT_ID:UNIT}
     UNIT = {
         name     : STRING or {da: STRING, en: STRING}. The name of the unit
+        alias    : STRING. Alias id's for the unit. E.q. "km/h km/t" for "km h-1"
         decimals : NUMBER. Default decimals. Default 0
         SI_unit  : UNIT_ID. Ref to the units SI-unit.
         SI_factor: FLOAT/STRING. Convertion between the unit and the SI-unit. SI-unit = SI_factor*unit + SI_offset
@@ -110,11 +111,11 @@ List of all units used in FCOOs web-application.
 
 
 
-    
-### The JavaScript package
-Contains methods for 
 
-- Getting parameter and units 
+### The JavaScript package
+Contains methods for
+
+- Getting parameter and units
 - Get parameter names with default units. E.q. `Temeprature (Air) [°C]`
 - Format value with units. E.q.`12.3 m/s`
 - Convert values between to units

@@ -34,6 +34,7 @@
     function Unit(id, options){
         this.id         = id;
         this.name       = options.name || '';
+        this.alias      = (options.alias || '').split(' ');
         this.decimals   = options.decimals || 0;
         this.noSpace    = options.noSpace || false;
         this.SI_unit    = options.SI_unit  || null;
@@ -76,7 +77,21 @@
 
     //Create list and methods direct in namespace
     nsParameter.getUnit = function(idOrUnit){
-        return typeof idOrUnit == 'string' ? nsUnit[idOrUnit] : idOrUnit;
+        var result = null;
+        if (typeof idOrUnit == 'string'){
+            result = nsUnit[idOrUnit];
+
+            if (!result)
+                //Try to find idOrUnit as alias for a unit
+                $.each(nsUnit, function(id, unit){
+                    if (unit.alias && (unit.alias.indexOf(idOrUnit) > -1))
+                        result = unit;
+                });
+        }
+        else
+            result = idOrUnit;
+
+        return result;
     };
 
     nsParameter.convert = function(value, fromUnit, toUnit){

@@ -39485,7 +39485,7 @@ if (typeof define === 'function' && define.amd) {
             callback(err, t);
           };
 
-          if (_this2.languages && _this2.options.compatibilityAPI !== 'v1') return finish(null, _this2.t.bind(_this2));
+          if (_this2.languages && _this2.options.compatibilityAPI !== 'v1' && !_this2.isInitialized) return finish(null, _this2.t.bind(_this2));
 
           _this2.changeLanguage(_this2.options.lng, finish);
         };
@@ -57054,10 +57054,10 @@ module.exports = g;
 //# sourceMappingURL=noty.js.map
 ;
 /**
- *  PDFObject v2.2.4
+ *  PDFObject v2.2.5
  *  https://github.com/pipwerks/PDFObject
  *  @license
- *  Copyright (c) 2008-2020 Philip Hutchison
+ *  Copyright (c) 2008-2021 Philip Hutchison
  *  MIT-style license: http://pipwerks.mit-license.org/
  *  UMD module pattern from https://github.com/umdjs/umd/blob/master/templates/returnExports.js
  */
@@ -57131,7 +57131,7 @@ module.exports = g;
                             /Safari/.test(ua) );
     
     //Firefox started shipping PDF.js in Firefox 19. If this is Firefox 19 or greater, assume PDF.js is available
-    let isFirefoxWithPDFJS = (!isMobileDevice && /irefox/.test(ua)) ? (parseInt(ua.split("rv:")[1].split(".")[0], 10) > 18) : false;
+    let isFirefoxWithPDFJS = (!isMobileDevice && /irefox/.test(ua) && ua.split("rv:").length > 1) ? (parseInt(ua.split("rv:")[1].split(".")[0], 10) > 18) : false;
 
 
     /* ----------------------------------------------------
@@ -57156,6 +57156,8 @@ module.exports = g;
     let supportsPDFs = (
         //As of Sept 2020 no mobile browsers properly support PDF embeds
         !isMobileDevice && (
+            //We're moving into the age of MIME-less browsers. They mostly all support PDF rendering without plugins.
+            isModernBrowser ||
             //Modern versions of Firefox come bundled with PDFJS
             isFirefoxWithPDFJS ||
             //Browsers that still support the original MIME type check
@@ -57250,6 +57252,7 @@ module.exports = g;
         iframe.className = "pdfobject";
         iframe.type = "application/pdf";
         iframe.frameborder = "0";
+        iframe.allow = "fullscreen";
         
         if(id){
             iframe.id = id;
@@ -57282,6 +57285,10 @@ module.exports = g;
 
         if(id){
             embed.id = id;
+        }
+
+        if(embedType === "iframe"){
+            embed.allow = "fullscreen";
         }
 
         if(!omitInlineStyles){
@@ -57356,7 +57363,7 @@ module.exports = g;
 
         //Embed PDF if traditional support is provided, or if this developer is willing to roll with assumption
         //that modern desktop (not mobile) browsers natively support PDFs 
-        if(supportsPDFs || (assumptionMode && isModernBrowser && !isMobileDevice)){
+        if(supportsPDFs || (assumptionMode && !isMobileDevice)){
             
             //Should we use <embed> or <iframe>? In most cases <embed>. 
             //Allow developer to force <iframe>, if desired

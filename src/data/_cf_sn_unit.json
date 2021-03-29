@@ -1,15 +1,18 @@
 {
     "m s-1": {
         "name": "m/s",
+        "alias": "m/s",
         "decimals": 1
     },
     "nm h-1": {
         "name": {"da":"knob", "en":"knots"},
+        "alias": "kn",
         "SI_unit": "m s-1",
         "SI_factor": "1852/(60*60)"
     },
     "km h-1": {
         "name": {"da":"km/t", "en":"km/h"},
+        "alias": "km/h km/t",
         "SI_unit": "m s-1",
         "SI_factor": "1000/(60*60)"
     },
@@ -60,6 +63,7 @@
     },
     "degC": {
         "name": "&deg;C",
+        "alias": "C",
         "decimals": 1,
         "noSpace": true,
         "SI_unit": "K",

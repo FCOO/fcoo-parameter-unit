@@ -159,7 +159,8 @@
     },
     
     "sea_surface_height_above_mean_sea_level": {
-        "unit": "cm",
+        "unit": "m",
+        "decimals": 2,
         "CF_SN_alias": "sea_surface_height_above_sea_level",
         "name": {"da": "Vandstand", "en": "Sea Level"},
         "group": "SEALEVEL"
@@ -222,6 +223,7 @@
     "speed_of_sound_in_sea_water": {
         "unit": "m s-1",
         "name": {"da": "Lydhastighed (hav)", "en": "Speed of Sound (Sea)"},
+        "decimals": 0,
         "group": "HYDRO"
     },
     
