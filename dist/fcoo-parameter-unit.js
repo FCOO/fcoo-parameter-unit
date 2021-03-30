@@ -34,6 +34,7 @@
     function Unit(id, options){
         this.id         = id;
         this.name       = options.name || '';
+        this.shortName  = options.shortName || null;//this.name;
         this.alias      = (options.alias || '').split(' ');
         this.decimals   = options.decimals || 0;
         this.noSpace    = options.noSpace || false;
@@ -44,12 +45,21 @@
         this.SI_offset = eval(this.SI_offset);
         this.SI_factor = eval(this.SI_factor);
 
+        /*
+        Create translation of unit-names with Namespace unit.
+        E.g. "unit:m"       = {da:"m", en:"m"} or "unit:nm h-1"      : {"da":"knob", "en":"knots"}
+             "unit_short:m" = {da:"m", en:"m"} or "unit_short:nm h-1": {"da":"kn", "en":"kn"}
+        */
         if (this.name){
             this.name = adjustText(this.name);
-
-            //Create translation of unit-names with Namespace unit. E.g. "unit:m" = {da:"m", en:"m"} or "unit:nm h-1": {"da":"knob", "en":"knots"}
             i18next.addPhrase( 'unit', this.id, this.name );
         }
+        if (this.shortName){
+            this.shortName = adjustText(this.shortName);
+            i18next.addPhrase( 'unit_short', this.id, this.shortName );
+        }
+
+
     }
 
     nsParameter.Unit = Unit;
@@ -69,8 +79,11 @@
             return fromUnit ? this.fromSI( fromUnit.toSI(value) ) : null;
         },
 
-        translate: function(prefix='', postfix=''){
-            var key = 'unit:'+this.id;
+        translate: function(prefix='', postfix='', useShortName){
+            var key      = 'unit:'+this.id,
+                keyShort = 'unit_short:'+this.id;
+            if (useShortName && i18next.exists(keyShort))
+                key = keyShort;
             return i18next.exists(key) ? prefix + i18next.t(key) + postfix : '';
         }
     };
@@ -184,9 +197,8 @@
                 unit = toUnit;
             }
 
-
             //Get numerical-format via FCOO-value-format
-            return $.valueFormat.formats['number'].format(value, {decimals: decimals}) + (inclUnit ? (unit.noSpace ? '' : '&nbsp;') + unit.translate() : '');
+            return $.valueFormat.formats['number'].format(value, {decimals: decimals}) + (inclUnit ? (unit.noSpace ? '' : '&nbsp;') + unit.translate('', '', true) : '');
         }
     };
 

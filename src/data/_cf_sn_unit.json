@@ -6,6 +6,7 @@
     },
     "nm h-1": {
         "name": {"da":"knob", "en":"knots"},
+        "shortName": "kn",
         "alias": "kn",
         "SI_unit": "m s-1",
         "SI_factor": "1852/(60*60)"
