@@ -191,7 +191,7 @@
                 toUnit = nsParameter.getUnit(toUnit);
 
                 //Calc decimals based on the factors between this.unit and toUnit
-                decimals = decimals + Math.max(0, Math.round(Math.log10(toUnit.SI_factor/unit.SI_factor)));
+                decimals = Math.max(0, decimals + Math.round(Math.log10(toUnit.SI_factor/unit.SI_factor)));
 
                 value = nsParameter.convert(value, unit, toUnit);
                 unit = toUnit;

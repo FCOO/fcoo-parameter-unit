@@ -50,7 +50,11 @@
                 console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm s-1', 'nm h-1') + ' '+ i18next.t('unit:nm h-1') );
                 console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm/s',   'kn')     + ' '+ i18next.t('unit:nm h-1') );
 
-                console.log('fcoo.parameter.getParameter("wind_speed")format(1.23, true, "kn") ->', fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") );
+                console.log('fcoo.parameter.getParameter("sea_surface_height_above_mean_sea_level").format(1.23456, true, "cm") ->', 
+                             fcoo.parameter.getParameter("sea_surface_height_above_mean_sea_level").format(1.23456, true, "cm") );
+
+                console.log('fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") ->', 
+                             fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") );
 
                 console.log("i18next.t('unit:1') => ", i18next.t('unit:1'));
 
