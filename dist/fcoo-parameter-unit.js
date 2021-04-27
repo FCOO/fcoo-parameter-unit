@@ -17,17 +17,6 @@
         nsUnit = nsParameter.unit = nsParameter.unit || {};
 
 
-    //adjustText convet STRING or {da:STRING, en:STRING,..} into complete {da:STRING,...} for all languages
-    function adjustText(text){
-        var result = typeof text == 'string' ? {da:text, en:text} : text;
-
-        $.each(i18next.options.languages || i18next.languages, function(index, lang){
-            result[lang] = result[lang] || result.en;
-        });
-        return result;
-    }
-
-
     /****************************************************************************
     UNIT
     ****************************************************************************/
@@ -51,11 +40,11 @@
              "unit_short:m" = {da:"m", en:"m"} or "unit_short:nm h-1": {"da":"kn", "en":"kn"}
         */
         if (this.name){
-            this.name = adjustText(this.name);
+            this.name = ns.ajdustLangName(this.name);
             i18next.addPhrase( 'unit', this.id, this.name );
         }
         if (this.shortName){
-            this.shortName = adjustText(this.shortName);
+            this.shortName = ns.ajdustLangName(this.shortName);
             i18next.addPhrase( 'unit_short', this.id, this.shortName );
         }
 
@@ -147,7 +136,7 @@
         }, options );
 
         this.id         = id;
-        this.name       = adjustText(options.name);
+        this.name       = ns.ajdustLangName(options.name);
         this.group      = options.group;
         this.decimals   = options.decimals;
         this.type       = options.type;
@@ -162,25 +151,27 @@
 
     nsParameter.Parameter = Parameter;
     nsParameter.Parameter.prototype = {
-        getName: function(inclUnit, z){
-            var _this = this,
-                result = {};
-            z = z ? adjustText(z) : null;
+        getName: function(inclUnit, z, useUnit){
+            var result = {};
+
+            z = z ? ns.ajdustLangName(z) : null;
+            useUnit = nsParameter.getUnit(useUnit || this.unit);
+
             $.each(this.name, function(lang, text){
                 var langText = text;
                 if (z)
                     langText = langText + '&nbsp;(' + z[lang] + ')';
 
                 if (inclUnit)
-                    langText = langText + '&nbsp;[' + _this.unit.name[lang] + ']';
+                    langText = langText + '&nbsp;[' + useUnit.name[lang] + ']';
 
                 result[lang] = langText;
             });
 
             return result;
         },
-        translate: function(inclUnit, z){
-            return i18next.sentence( this.getName(inclUnit, z) );
+        translate: function(inclUnit, z, useUnit){
+            return i18next.sentence( this.getName(inclUnit, z, useUnit) );
         },
 
         format: function(value, inclUnit, toUnit){

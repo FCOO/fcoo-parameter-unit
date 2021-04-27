@@ -59796,10 +59796,14 @@ jquery-bootstrap-modal-promise.js
         modalVerticalMargin = 10, //Top and bottom margin for modal windows
 
         //Const to set different size of modal-window
-        MODAL_SIZE_NORMAL    = 1, //'normal',
-        MODAL_SIZE_MINIMIZED = 2, //'minimized',
-        MODAL_SIZE_EXTENDED  = 4; //'extended';
+        MODAL_SIZE_NORMAL    = $.MODAL_SIZE_NORMAL    = 1, //'normal',
+        MODAL_SIZE_MINIMIZED = $.MODAL_SIZE_MINIMIZED = 2, //'minimized',
+        MODAL_SIZE_EXTENDED  = $.MODAL_SIZE_EXTENDED  = 4, //'extended';
 
+        modalSizeName = {};
+        modalSizeName[MODAL_SIZE_NORMAL   ] = 'normal';
+        modalSizeName[MODAL_SIZE_MINIMIZED] = 'minimized';
+        modalSizeName[MODAL_SIZE_EXTENDED ] = 'extended';
 
     /**********************************************************
     MAX-HEIGHT ISSUES ON SAFARI (AND OTHER BROWSER ON IOS)
@@ -60037,17 +60041,17 @@ jquery-bootstrap-modal-promise.js
         update: function( options ){
             var _this = this;
             //***********************************************************
-            function updateElement( test, $element, newOptions, methodName, param ){
+            function updateElement($element, newOptions, methodName, param, param2 ){
                 if ($element && newOptions){
                     $element.empty();
-                    $element[methodName](newOptions, param);
+                    $element[methodName](newOptions, param, param2);
                 }
             }
             //***********************************************************
 
             //Update header
             var $iconContainer = this.bsModal.$header.find('.header-icon-container').detach();
-            updateElement(0, this.bsModal.$header, options, '_bsHeaderAndIcons');
+            updateElement(this.bsModal.$header, options, '_bsHeaderAndIcons');
             this.bsModal.$header.append($iconContainer);
 
             _updateFixedAndFooterInOptions(options);
@@ -60058,10 +60062,9 @@ jquery-bootstrap-modal-promise.js
                     contentOptions = id ? options[id]       : options;
 
                 if (containers && contentOptions){
-//Changed 2020-05-22                    updateElement( 1, containers.$fixedContent, contentOptions.fixedContent, '_bsAddHtml',       true );
-                    updateElement( 1, containers.$fixedContent, contentOptions.fixedContent, '_bsAppendContent', contentOptions.fixedContentContext );
-                    updateElement( 2, containers.$content,      contentOptions.content,      '_bsAppendContent', contentOptions.contentContext );
-                    updateElement( 3, containers.$footer,       contentOptions.footer,       '_bsAddHtml' );
+                    updateElement(containers.$fixedContent, contentOptions.fixedContent, '_bsAppendContent', contentOptions.fixedContentContext, contentOptions.fixedContentArg );
+                    updateElement(containers.$content,      contentOptions.content,      '_bsAppendContent', contentOptions.contentContext,      contentOptions.contentArg      );
+                    updateElement(containers.$footer,       contentOptions.footer,       '_bsAddHtml' );
                 }
             });
             return this;
@@ -60081,7 +60084,7 @@ jquery-bootstrap-modal-promise.js
     Create the body and footer content (exc header and bottoms)
     of a modal inside this. Created elements are saved in parts
     ******************************************************/
-    $.fn._bsModalBodyAndFooter = function(size, options, parts, className){
+    $.fn._bsModalBodyAndFooter = function(size, options, parts, className, initSize){
 
         //Set variables used to set scroll-bar (if any)
         var hasScroll       = !!options.scroll,
@@ -60089,7 +60092,7 @@ jquery-bootstrap-modal-promise.js
             scrollDirection = options.scroll === true ? 'vertical' : options.scroll,
             scrollbarClass  = hasScroll ? 'scrollbar-'+scrollDirection : '';
 
-        className = (className || '') + ' show-for-modal-'+size;
+        className = (className || '') + ' show-for-modal-'+modalSizeName[size];
 
         //Remove padding if the content is tabs and content isn't created from bsModal - not pretty :-)
         if (isTabs){
@@ -60113,7 +60116,6 @@ jquery-bootstrap-modal-promise.js
                     .appendTo( this );
 
         if (options.fixedContent)
-//Changed 2020-05-22            $modalFixedContent._bsAddHtml( options.fixedContent, true );
             $modalFixedContent._bsAppendContent( options.fixedContent, options.fixedContentContext );
 
         //Append body and content
@@ -60142,8 +60144,14 @@ jquery-bootstrap-modal-promise.js
                         }) :
                     $modalBody;
 
-        //Add content
-        $modalContent._bsAppendContent( options.content, options.contentContext );
+        //Add content. If the content is 'dynamic' ie options.dynamic == true and options.content is a function, AND it is a different size => save function
+        if (options.dynamic && (typeof options.content == 'function') && (size != initSize)){
+            parts.dynamicContent        = options.content;
+            parts.dynamicContentContext = options.contentContext;
+            parts.dynamicContentArg     = options.contentArg;
+        }
+        else
+            $modalContent._bsAppendContent( options.content, options.contentContext, options.contentArg );
 
         //Add scroll-event to close any bootstrapopen -select
         if (hasScroll)
@@ -60161,7 +60169,7 @@ jquery-bootstrap-modal-promise.js
 
         //Add onClick to all elements - if nedded
         if (options.onClick){
-            this.addClass('modal-' + size + '-clickable');
+            this.addClass('modal-' + modalSizeName[size] + '-clickable');
             if (options.fixedContent)
                 $modalFixedContent.on('click', options.onClick);
 
@@ -60246,13 +60254,13 @@ jquery-bootstrap-modal-promise.js
         //Add class to make content semi-transparent
         setStateClass('semi-transparent', 'semiTransparent');
 
-        this._bsModalSetSizeClass(
-            options.minimized && options.isMinimized ?
-                MODAL_SIZE_MINIMIZED :
-            options.extended && options.isExtended ?
-                MODAL_SIZE_EXTENDED :
-                MODAL_SIZE_NORMAL
-        );
+        var initSize =  options.minimized && options.isMinimized ?
+                            MODAL_SIZE_MINIMIZED :
+                        options.extended && options.isExtended ?
+                            MODAL_SIZE_EXTENDED :
+                            MODAL_SIZE_NORMAL;
+
+        this._bsModalSetSizeClass(initSize);
         this._bsModalSetHeightAndWidth();
 
         var modalExtend       = $.proxy( this._bsModalExtend,       this),
@@ -60352,7 +60360,7 @@ jquery-bootstrap-modal-promise.js
             if (options.minimized.showHeaderOnClick)
                 this.bsModal.$header.on('click', bsModalToggleMinimizedHeader);
 
-            $modalContent._bsModalBodyAndFooter( 'minimized', options.minimized, this.bsModal.minimized );
+            $modalContent._bsModalBodyAndFooter( MODAL_SIZE_MINIMIZED/*'minimized'*/, options.minimized, this.bsModal.minimized, '', initSize );
 
             if (options.minimized.showHeaderOnClick){
                 //Using fixed-height as height of content
@@ -60374,22 +60382,24 @@ jquery-bootstrap-modal-promise.js
                     modalDiminish :
                     null;
 
-        $modalContent._bsModalBodyAndFooter('normal', options, this.bsModal);
+        $modalContent._bsModalBodyAndFooter(MODAL_SIZE_NORMAL/*'normal'*/, options, this.bsModal, '', initSize);
 
         //Create extended content (if any)
         if (options.extended){
             this.bsModal.extended = {};
             if (options.extended.clickable)
                 options.extended.onClick = options.extended.onClick || modalDiminish;
-            $modalContent._bsModalBodyAndFooter( 'extended', options.extended, this.bsModal.extended);
+            $modalContent._bsModalBodyAndFooter( MODAL_SIZE_EXTENDED/*'extended'*/, options.extended, this.bsModal.extended, '', initSize);
         }
 
-        //Add buttons (if any). Allways hidden for minimized
-        var $modalButtonContainer = this.bsModal.$buttonContainer =
+        //Add buttons (if any). Allways hidden for minimized. Need to add outer-div ($outer) to avoid
+        //that $modalButtonContainer is direct children since show-for-modal-XX overwrite direct children display: flex with display: initial
+        var $outer = $('<div/>').appendTo( $modalContent ),
+            $modalButtonContainer = this.bsModal.$buttonContainer =
                 $('<div/>')
-                    .addClass('modal-footer show-for-no-modal-minimized')
+                    .addClass('modal-footer')
                     .toggleClass('modal-footer-vertical', !!options.verticalButtons)
-                    .appendTo( $modalContent ),
+                    .appendTo( $outer ),
             $modalButtons = this.bsModal.$buttons = [],
 
             buttons = options.buttons || [],
@@ -60398,6 +60408,12 @@ jquery-bootstrap-modal-promise.js
                 addOnClick  : true,
                 small       : options.smallButtons
             };
+
+        //If extende-content and extended.buttons = false => no buttons in extended
+        if (options.extended && (options.extended.buttons === false))
+            $modalButtonContainer.addClass('show-for-modal-normal');
+        else
+            $modalButtonContainer.addClass('show-for-no-modal-minimized');
 
         //If no button is given focus by options.focus: true => Last button gets focus
         var focusAdded = false;
@@ -60514,9 +60530,29 @@ jquery-bootstrap-modal-promise.js
 
     //Set new size of modal-window
     $.fn._bsModalSetSize = function(size){
+        //Check to see if the content of the new size need to be created dynamically
+        var parts = this.bsModal[ modalSizeName[size] ] || this.bsModal;
+
+        if (parts && parts.dynamicContent){
+            parts.$content._bsAppendContent( parts.dynamicContent, parts.dynamicContentContext, parts.dynamicContentArg );
+
+            parts.dynamicContent        = null;
+            parts.dynamicContentContext = null;
+            parts.dynamicContentArg     = null;
+        }
+
         this._bsModalSetSizeClass(size);
         this._bsModalSetHeightAndWidth();
-        return false; //Prevent onclick-event on header
+
+
+        /*
+        NOTE: 2021-04-16
+        Original this methods returns false to prevent onclick-event on the header.
+        That prevented other more general events to be fired. Eg. in fcoo/leaflet-bootstrap
+        where the focus of a popup window was set when the window was clicked
+        It appear not to have any other effect when removed.
+        */
+        //return false; //Prevent onclick-event on header
     };
 
     //hid/show header for size = minimized
@@ -63264,7 +63300,7 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
         },
 
         /****************************************************************************************
-        _bsAppendContent( options, context )
+        _bsAppendContent( options, context, arg )
         Create and append any content to this.
         options can be $-element, function, json-object or array of same
 
@@ -63286,7 +63322,7 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
             </div>
         </div>
         ****************************************************************************************/
-        _bsAppendContent: function( options, context ){
+        _bsAppendContent: function( options, context, arg ){
 
             //Internal functions to create baseSlider and timeSlider
             function buildSlider(options, constructorName, $parent){
@@ -63330,9 +63366,11 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
                 return this;
             }
 
-            //Function
+            //Function: Include arg (if any) in call to method (=options)
             if ($.isFunction( options )){
-                options.call( context, this );
+                arg = arg ? $.isArray(arg) ? arg : [arg] : [];
+                arg.unshift(this);
+                options.apply( context, arg );
                 return this;
             }
 
@@ -63405,6 +63443,10 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
                     if (addBorder && !options.noBorder){
                         //Add border and label (if any)
                         $inputGroup.addClass('input-group-border');
+
+                        if (options.darkBorderlabel)
+                            $inputGroup.addClass('input-group-border-dark');
+
                         if (options.label){
                             $inputGroup.addClass('input-group-border-with-label');
                             $('<span/>')
@@ -69972,6 +70014,21 @@ return index;
 
     //fallback used when initialize i18next
     var fallbackLng = getFallbackLng( language, ns.globalSetting.get('language2') );
+
+
+    /***********************************************************
+    ajdustLangName: function(name: STRING or {LANG: STRING})
+    Return {LANG: STRING} for all language based on available values in name
+    ***********************************************************/
+    ns.ajdustLangName = function(name){
+        var result = typeof name == 'string' ? {en: name} : name,
+            defaultName = result['en'] || result['da'];
+
+        $.each(languages, function(index, lang){
+            result[lang] = result[lang] || defaultName;
+        });
+        return result;
+    };
 
 
     /***********************************************************
