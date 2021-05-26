@@ -142,6 +142,7 @@
         this.type       = options.type;
         this.standard   = options.standard;
         this.unit       = nsUnit[options.unit];
+        this.negative   = !!options.negative;
         this.eastward_northward = options.eastward_northward;
         this.speed_direction    = options.speed_direction;
 

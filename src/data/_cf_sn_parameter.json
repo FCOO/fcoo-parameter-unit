@@ -19,11 +19,13 @@
     "eastward_wind": {
         "unit": "m s-1",
         "TODOname": {"da": "", "en": ""},
+        "negative": true,
         "group": "WIND"
     },
     "northward_wind": {
         "unit": "m s-1",
         "TODOname": {"da": "", "en": ""},
+        "negative": true,
         "group": "WIND"
     },
     "wind": {
@@ -112,6 +114,7 @@
     "air_temperature": {
         "unit": "degC",
         "name": {"da": "Temperatur (luft)", "en": "Temeprature (Air)"},
+        "negative": true,
         "group": "METEO"
     },
     
@@ -160,6 +163,7 @@
     
     "sea_surface_height_above_mean_sea_level": {
         "unit": "m",
+        "negative": true,
         "decimals": 2,
         "CF_SN_alias": "sea_surface_height_above_sea_level",
         "name": {"da": "Vandstand", "en": "Sea Level"},
@@ -216,6 +220,7 @@
     
     "sea_water_temperature": {
         "unit": "degC",
+        "negative": true,
         "name": {"da": "Temperatur (hav)", "en": "Temperature (Sea)"},
         "group": "HYDRO"
     },
@@ -244,11 +249,13 @@
     },
     "eastward_sea_water_velocity": {
         "unit": "m s-1",
+        "negative": true,
         "TODOname": {"da": "", "en": ""},
         "group": "CURRENT"
     },
     "northward_sea_water_velocity": {
         "unit": "m s-1",
+        "negative": true,
         "TODOname": {"da": "", "en": ""},
         "group": "CURRENT"
     },
@@ -273,11 +280,13 @@
     },
     "eastward_sea_water_velocity_at_sea_floor": {
         "unit": "m s-1",
+        "negative": true,
         "TODOname": {"da": "", "en": ""},
         "group": "CURRENT"
     },
     "northward_sea_water_velocity_at_sea_floor": {
         "unit": "m s-1",
+        "negative": true,
         "TODOname": {"da": "", "en": ""},
         "group": "CURRENT"
     },
@@ -305,11 +314,13 @@
     },
     "surface_eastward_sea_water_velocity": {
         "unit": "m s-1",
+        "negative": true,
         "TODOname": {"da": "", "en": ""},
         "group": "CURRENT"
     },
     "surface_northward_sea_water_velocity": {
         "unit": "m s-1",
+        "negative": true,
         "TODOname": {"da": "", "en": ""},
         "group": "CURRENT"
     },
