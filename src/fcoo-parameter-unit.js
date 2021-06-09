@@ -17,6 +17,23 @@
         nsUnit = nsParameter.unit = nsParameter.unit || {};
 
 
+
+    /****************************************************************************
+    directionAsText
+    Convert a 0-359 direction to N, NNE, NE, ENE, E,...
+    ****************************************************************************/
+    nsParameter.directionText = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW","N"];
+    //Could be in Danish as ["N","NNØ","NØ","ØNØ","Ø","ØSØ","SØ","SSØ","S","SSV","SV","VSV","V","VNV","NV","NNV","N"];
+    //Could be extended to 64: ["N","N t. Ø","NNØ","NØ t. N","NØ","NØ t. Ø","ØNØ","Ø t. N","Ø","Ø t. S","ØSØ","SØ t. Ø","SØ","SØ t. S","SSØ","S t. Ø","S","S t. V","SSV","SV t. S","SV","SV t. V","VSV","V t. S","V","V t. N","VNV","NV t. V","NV","NV t. N","NNV","N t. V","N"]
+
+    var sectionDeg = 360/(nsParameter.directionText.length-1);
+
+    nsParameter.directionAsText = function(direction, directionFrom){
+        direction = (direction + 360 + (directionFrom ? 180 : 0)) % 360;
+        return nsParameter.directionText[Math.round(direction / sectionDeg)];
+    };
+
+
     /****************************************************************************
     UNIT
     ****************************************************************************/
@@ -36,8 +53,8 @@
 
         /*
         Create translation of unit-names with Namespace unit.
-        E.g. "unit:m"       = {da:"m", en:"m"} or "unit:nm h-1"      : {"da":"knob", "en":"knots"}
-             "unit_short:m" = {da:"m", en:"m"} or "unit_short:nm h-1": {"da":"kn", "en":"kn"}
+        E.g. "unit:m"       = {da:"m", en:"m"} or "unit:nm h-1"      : {"da":"knob","en":"knots"}
+             "unit_short:m" = {da:"m", en:"m"} or "unit_short:nm h-1": {"da":"kn","en":"kn"}
         */
         if (this.name){
             this.name = ns.ajdustLangName(this.name);
@@ -145,8 +162,9 @@
         this.negative   = !!options.negative;
         this.eastward_northward = options.eastward_northward;
         this.speed_direction    = options.speed_direction;
+        this.asTextFrom = !!options.asTextFrom; //True for direction-parameter displayed as from (eq. vind-direction)
 
-        //Create translation of parameter-names with Namespace parameter. E.g. "parameter:sea_water_speed" = {"da": "Strømhastighed", "en": "Current Speed"}
+        //Create translation of parameter-names with Namespace parameter. E.g. "parameter:sea_water_speed" = {"da": "Strømhastighed","en": "Current Speed"}
         i18next.addPhrase( 'parameter', this.id, this.name );
     }
 
@@ -175,6 +193,7 @@
             return i18next.sentence( this.getName(inclUnit, z, useUnit) );
         },
 
+        //format: Format a value incl unit (optional) and convert it (optional)
         format: function(value, inclUnit, toUnit){
             var decimals = this.decimals,
                 unit = this.unit;
@@ -191,6 +210,11 @@
 
             //Get numerical-format via FCOO-value-format
             return $.valueFormat.formats['number'].format(value, {decimals: decimals}) + (inclUnit ? (unit.noSpace ? '' : '&nbsp;') + unit.translate('', '', true) : '');
+        },
+
+        //asText: Convert a direction to text ("N", "NNE", "NE",...)
+        asText: function(direction){
+            return nsParameter.directionAsText(direction, this.asTextFrom);
         }
     };
 
