@@ -19,19 +19,11 @@
 
 
     /****************************************************************************
-    directionAsText
-    Convert a 0-359 direction to N, NNE, NE, ENE, E,...
+    directionAsText and directionAsText are located in fcoo/fcoo-value-format#^3.7
+    For backward compability the are also out in nsParameter
     ****************************************************************************/
-    nsParameter.directionText = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW","N"];
-    //Could be in Danish as ["N","NNØ","NØ","ØNØ","Ø","ØSØ","SØ","SSØ","S","SSV","SV","VSV","V","VNV","NV","NNV","N"];
-    //Could be extended to 64: ["N","N t. Ø","NNØ","NØ t. N","NØ","NØ t. Ø","ØNØ","Ø t. N","Ø","Ø t. S","ØSØ","SØ t. Ø","SØ","SØ t. S","SSØ","S t. Ø","S","S t. V","SSV","SV t. S","SV","SV t. V","VSV","V t. S","V","V t. N","VNV","NV t. V","NV","NV t. N","NNV","N t. V","N"]
-
-    var sectionDeg = 360/(nsParameter.directionText.length-1);
-
-    nsParameter.directionAsText = function(direction, directionFrom){
-        direction = (direction + 360 + (directionFrom ? 180 : 0)) % 360;
-        return nsParameter.directionText[Math.round(direction / sectionDeg)];
-    };
+    nsParameter.directionText   = ns.directionText;
+    nsParameter.directionAsText = ns.directionAsText;
 
 
     /****************************************************************************
