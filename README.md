@@ -5,6 +5,7 @@
 ## Description
 Subset of [CF Standard Names](https://cfconventions.org/standard-names.html) from [CF Conventions and Metadata](https://cfconventions.org/index.html) of parameters and subset of [UDUNITS](https://www.unidata.ucar.edu/software/udunits) of units used in FCOO applications.
 
+See also [the list from NOAA](https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html#TABLE2)
 
 ## Installation
 ### bower
