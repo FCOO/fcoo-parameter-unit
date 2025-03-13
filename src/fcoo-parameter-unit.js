@@ -94,7 +94,7 @@
 
             if (!result)
                 //Try to find idOrUnit as alias for a unit
-                $.each(nsUnit, function(id, unit){
+                $.each(nsUnit, (id, unit) => {
                     if (unit.alias && (unit.alias.indexOf(idOrUnit) > -1))
                         result = unit;
                 });
@@ -114,12 +114,12 @@
     ns.promiseList.append({
         fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_unit.json'},
         resolve : function(data){
-            $.each(data, function(unit_id, options){
+            $.each(data, (unit_id, options) => {
                 nsUnit[unit_id] = new nsParameter.Unit(unit_id, options);
             });
 
             //Link SI-units with its derivative
-            $.each(nsUnit, function(unitId, unit){
+            $.each(nsUnit, (unitId, unit) => {
                 if (unit.SI_unit){
                     nsUnit[unit.SI_unit].derivative = nsUnit[unit.SI_unit].derivative || {};
                     nsUnit[unit.SI_unit].derivative[unitId] = unit;
@@ -146,6 +146,7 @@
 
         this.id         = id;
         this.name       = ns.ajdustLangName(options.name);
+        this.shortName  = ns.ajdustLangName(options.shortName || this.name);
         this.group      = options.group;
         this.decimals   = options.decimals;
         this.type       = options.type;
@@ -168,7 +169,7 @@
             z = z ? ns.ajdustLangName(z) : null;
             useUnit = nsParameter.getUnit(useUnit || this.unit);
 
-            $.each(this.name, function(lang, text){
+            $.each(this.name, (lang, text) => {
                 var langText = text;
                 if (z)
                     langText = langText + '&nbsp;(' + z[lang] + ')';
@@ -219,17 +220,17 @@
     ns.promiseList.append({
         fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_parameter.json'},
         resolve : function(data){
-            $.each(data, function(parameter_id, options){
+            $.each(data, (parameter_id, options) => {
                 nsParameter[parameter_id] = new nsParameter.Parameter(parameter_id, options);
             });
 
             //Link parameters to its vector-components
-            $.each(nsParameter, function(pId, param){
+            $.each(nsParameter, (pId, param) => {
                 if (param.type == 'vector'){
-                    $.each(param.eastward_northward, function(index, id){
+                    param.eastward_northward.forEach( (id, index) => {
                         param.eastward_northward[index] = nsParameter[id];
                     });
-                    $.each(param.speed_direction, function(index, id){
+                    param.speed_direction.forEach( (id, index) => {
                         param.speed_direction[index] = nsParameter[id];
                     });
                 }
