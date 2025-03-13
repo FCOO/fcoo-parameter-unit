@@ -32,7 +32,7 @@
     function Unit(id, options){
         this.id         = id;
         this.name       = options.name || '';
-        this.shortName  = options.shortName || null;//this.name;
+        this.shortName  = options.shortName || null;
         this.alias      = (options.alias || '').split(' ');
         this.decimals   = options.decimals || 0;
         this.noSpace    = options.noSpace || false;
@@ -159,17 +159,18 @@
 
         //Create translation of parameter-names with Namespace parameter. E.g. "parameter:sea_water_speed" = {"da": "Strømhastighed","en": "Current Speed"}
         i18next.addPhrase( 'parameter', this.id, this.name );
+        i18next.addPhrase( 'parameter_short', this.id, this.shortName );
     }
 
     nsParameter.Parameter = Parameter;
     nsParameter.Parameter.prototype = {
-        getName: function(inclUnit, z, useUnit){
+        getName: function(inclUnit, z, useUnit, useShortName){
             var result = {};
 
             z = z ? ns.ajdustLangName(z) : null;
             useUnit = nsParameter.getUnit(useUnit || this.unit);
 
-            $.each(this.name, (lang, text) => {
+            $.each(useShortName ? this.shortName : this.name, (lang, text) => {
                 var langText = text;
                 if (z)
                     langText = langText + '&nbsp;(' + z[lang] + ')';
@@ -182,8 +183,8 @@
 
             return result;
         },
-        translate: function(inclUnit, z, useUnit){
-            return i18next.sentence( this.getName(inclUnit, z, useUnit) );
+        translate: function(inclUnit, z, useUnit, useShortName){
+            return i18next.sentence( this.getName(inclUnit, z, useUnit, useShortName) );
         },
 
         //format: Format a value incl unit (optional) and convert it (optional)
