@@ -134,7 +134,7 @@
     PARAMETER
     ****************************************************************************/
     function Parameter(id, options){
-        options = $.extend(true, {
+        options = this.options = $.extend(true, {
             name    : id,
             group   : 'METRO',
             type    : "scalar",
