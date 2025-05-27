@@ -25,6 +25,9 @@
     nsParameter.directionText   = ns.directionText;
     nsParameter.directionAsText = ns.directionAsText;
 
+    nsParameter.parameters = {};
+    nsUnit.units = {};
+
 
     /****************************************************************************
     UNIT
@@ -105,6 +108,10 @@
         return result;
     };
 
+    nsParameter.visitAllUnits = function( func ){
+        $.each( nsUnit.units, (id, unit) => func(unit) );
+    };
+
     nsParameter.convert = function(value, fromUnit, toUnit){
         fromUnit = nsParameter.getUnit(fromUnit);
         return fromUnit ? fromUnit.convertTo(value, toUnit ) : null;
@@ -115,7 +122,7 @@
         fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_unit.json'},
         resolve : function(data){
             $.each(data, (unit_id, options) => {
-                nsUnit[unit_id] = new nsParameter.Unit(unit_id, options);
+                nsUnit.units[unit_id] = nsUnit[unit_id] = new nsParameter.Unit(unit_id, options);
             });
 
             //Link SI-units with its derivative
@@ -217,12 +224,21 @@
         return typeof idOrParameter == 'string' ? nsParameter[idOrParameter] : idOrParameter;
     };
 
+    nsParameter.visitAllParameters = function(func, onlyType ){
+        $.each( nsParameter.parameters, (id, parameter) => {
+            if (!onlyType || (parameter.type == onlyType))
+                func(parameter);
+        });
+    };
+
+
+
     //Load parameter
     ns.promiseList.append({
         fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_parameter.json'},
         resolve : function(data){
             $.each(data, (parameter_id, options) => {
-                nsParameter[parameter_id] = new nsParameter.Parameter(parameter_id, options);
+                nsParameter.parameters[parameter_id] = nsParameter[parameter_id] = new nsParameter.Parameter(parameter_id, options);
             });
 
             //Link parameters to its vector-components

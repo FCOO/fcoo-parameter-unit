@@ -16,15 +16,18 @@
     <script src="bower_components.js"></script>
 	<script src="../src/fcoo-parameter-unit.js"></script>
 	<script>
-        window.fcoo.LOCAL_DATA = true;
-        //window.fcoo.DEMO_VERSION = true;
+        //window.fcoo.LOCAL_DATA = true;
+        window.fcoo.DEMO_VERSION = true;
+        //TEMP: No access to data-files on AWS. Read from old location instead
+        window.fcoo.path.setPath({host: 'bal.fcoo.dk'});
 
         Promise.defaultErrorHandler = function(e){ console.log('Error', e); };
 
         i18next.changeLanguage('da');
 
-    $(function() {
-        //Check against standard names 
+    $(function(){
+        //Check against standard names
+/*
         fcoo.promiseList.appendLast({
             fileName: {subDir: 'parameter-unit', fileName: 'cf-standard-name-table.xml'},
             format : 'XML',
@@ -39,22 +42,26 @@
                 });
             }
         });
+*/
+
+          fcoo.promiseList.options.finally = function(){
+            fcoo.globalSetting.load(null, function(){
 
 
-        fcoo.promiseList.options.finally = function(){
-            fcoo.globalSetting.load(null, function(){;
+                console.log('******** All vectors **************');
+                fcoo.parameter.visitAllParameters( p => console.log(p), 'vector' );
+                console.log('***********************************');
+
 
                 console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm s-1', 'km h-1') + ' '+ i18next.t('unit:km h-1') );
                 console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm/s',   'km/h')   + ' '+ i18next.t('unit:km h-1') );
                 console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm s-1', 'nm h-1') + ' '+ i18next.t('unit:nm h-1') );
                 console.log('1.23 m/s ->', fcoo.parameter.convert(1.23, 'm/s',   'kn')     + ' '+ i18next.t('unit:nm h-1') );
 
-                console.log('fcoo.parameter.getParameter("sea_surface_height_above_mean_sea_level").format(1.23456, true, "cm") ->', 
-                             fcoo.parameter.getParameter("sea_surface_height_above_mean_sea_level").format(1.23456, true, "cm") );
-
-                console.log('fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") ->', 
+                 console.log('fcoo.parameter.getParameter("sea_surface_height_above_mean_sea_level").format(1.23456, true, "cm") ->',
+                              fcoo.parameter.getParameter("sea_surface_height_above_mean_sea_level").format(1.23456, true, "cm") );
+                console.log('fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") ->',
                              fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") );
-
                 console.log("i18next.t('unit:1') => ", i18next.t('unit:1'));
 
                 document.write('<table border="1"><tR><th>Id</th><th>Navn og enhed</th><th>Name and Unit</th><th>12.345678</th><th>As SI-unit</th></tr>');
@@ -77,10 +84,13 @@
             });
         };
 
+
+console.log(fcoo.promiseList);
+
         fcoo.promiseList.promiseAll();
     });
 
-    
+
     </script>
 </body>
 </html>

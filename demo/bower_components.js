@@ -10717,8 +10717,8 @@ return jQuery;
 
 ;
 /*!
-  * Bootstrap v5.3.3 (https://getbootstrap.com/)
-  * Copyright 2011-2024 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Bootstrap v5.3.6 (https://getbootstrap.com/)
+  * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
   */
 (function (global, factory) {
@@ -10923,7 +10923,7 @@ return jQuery;
    * @param {HTMLElement} element
    * @return void
    *
-   * @see https://www.charistheo.io/blog/2021/02/restart-a-css-animation-with-javascript/#restarting-a-css-animation
+   * @see https://www.harrytheo.com/blog/2021/02/restart-a-css-animation-with-javascript/#restarting-a-css-animation
    */
   const reflow = element => {
     element.offsetHeight; // eslint-disable-line no-unused-expressions
@@ -10968,7 +10968,7 @@ return jQuery;
     });
   };
   const execute = (possibleCallback, args = [], defaultValue = possibleCallback) => {
-    return typeof possibleCallback === 'function' ? possibleCallback(...args) : defaultValue;
+    return typeof possibleCallback === 'function' ? possibleCallback.call(...args) : defaultValue;
   };
   const executeAfterTransition = (callback, transitionElement, waitForTransition = true) => {
     if (!waitForTransition) {
@@ -11290,7 +11290,7 @@ return jQuery;
       const bsKeys = Object.keys(element.dataset).filter(key => key.startsWith('bs') && !key.startsWith('bsConfig'));
       for (const key of bsKeys) {
         let pureKey = key.replace(/^bs/, '');
-        pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length);
+        pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1);
         attributes[pureKey] = normalizeData(element.dataset[key]);
       }
       return attributes;
@@ -11365,7 +11365,7 @@ return jQuery;
    * Constants
    */
 
-  const VERSION = '5.3.3';
+  const VERSION = '5.3.6';
 
   /**
    * Class definition
@@ -11391,6 +11391,8 @@ return jQuery;
         this[propertyName] = null;
       }
     }
+
+    // Private
     _queueCallback(callback, element, isAnimated = true) {
       executeAfterTransition(callback, element, isAnimated);
     }
@@ -12322,11 +12324,11 @@ return jQuery;
       this._element.style[dimension] = '';
       this._queueCallback(complete, this._element, true);
     }
+
+    // Private
     _isShown(element = this._element) {
       return element.classList.contains(CLASS_NAME_SHOW$7);
     }
-
-    // Private
     _configAfterMerge(config) {
       config.toggle = Boolean(config.toggle); // Coerce string values
       config.parent = getElement(config.parent);
@@ -13384,7 +13386,6 @@ return jQuery;
     var popperOffsets = computeOffsets({
       reference: referenceClientRect,
       element: popperRect,
-      strategy: 'absolute',
       placement: placement
     });
     var popperClientRect = rectToClientRect(Object.assign({}, popperRect, popperOffsets));
@@ -13712,7 +13713,6 @@ return jQuery;
     state.modifiersData[name] = computeOffsets({
       reference: state.rects.reference,
       element: state.rects.popper,
-      strategy: 'absolute',
       placement: state.placement
     });
   } // eslint-disable-next-line import/no-unused-modules
@@ -14408,6 +14408,9 @@ return jQuery;
       this._element.setAttribute('aria-expanded', 'false');
       Manipulator.removeDataAttribute(this._menu, 'popper');
       EventHandler.trigger(this._element, EVENT_HIDDEN$5, relatedTarget);
+
+      // Explicitly return focus to the trigger element
+      this._element.focus();
     }
     _getConfig(config) {
       config = super._getConfig(config);
@@ -14419,7 +14422,7 @@ return jQuery;
     }
     _createPopper() {
       if (typeof Popper === 'undefined') {
-        throw new TypeError('Bootstrap\'s dropdowns require Popper (https://popper.js.org)');
+        throw new TypeError('Bootstrap\'s dropdowns require Popper (https://popper.js.org/docs/v2/)');
       }
       let referenceElement = this._element;
       if (this._config.reference === 'parent') {
@@ -14498,7 +14501,7 @@ return jQuery;
       }
       return {
         ...defaultBsPopperConfig,
-        ...execute(this._config.popperConfig, [defaultBsPopperConfig])
+        ...execute(this._config.popperConfig, [undefined, defaultBsPopperConfig])
       };
     }
     _selectMenuItem({
@@ -15685,7 +15688,7 @@ return jQuery;
       return this._config.sanitize ? sanitizeHtml(arg, this._config.allowList, this._config.sanitizeFn) : arg;
     }
     _resolvePossibleFunction(arg) {
-      return execute(arg, [this]);
+      return execute(arg, [undefined, this]);
     }
     _putElementInTemplate(element, templateElement) {
       if (this._config.html) {
@@ -15784,7 +15787,7 @@ return jQuery;
   class Tooltip extends BaseComponent {
     constructor(element, config) {
       if (typeof Popper === 'undefined') {
-        throw new TypeError('Bootstrap\'s tooltips require Popper (https://popper.js.org)');
+        throw new TypeError('Bootstrap\'s tooltips require Popper (https://popper.js.org/docs/v2/)');
       }
       super(element, config);
 
@@ -15830,7 +15833,6 @@ return jQuery;
       if (!this._isEnabled) {
         return;
       }
-      this._activeTrigger.click = !this._activeTrigger.click;
       if (this._isShown()) {
         this._leave();
         return;
@@ -16018,7 +16020,7 @@ return jQuery;
       return offset;
     }
     _resolvePossibleFunction(arg) {
-      return execute(arg, [this._element]);
+      return execute(arg, [this._element, this._element]);
     }
     _getPopperConfig(attachment) {
       const defaultBsPopperConfig = {
@@ -16056,7 +16058,7 @@ return jQuery;
       };
       return {
         ...defaultBsPopperConfig,
-        ...execute(this._config.popperConfig, [defaultBsPopperConfig])
+        ...execute(this._config.popperConfig, [undefined, defaultBsPopperConfig])
       };
     }
     _setListeners() {
@@ -16930,7 +16932,6 @@ return jQuery;
     }
 
     // Private
-
     _maybeScheduleHide() {
       if (!this._config.autohide) {
         return;
@@ -32450,12 +32451,11 @@ module.exports = Yaml;
   }
 
   /*!
-   * GSAP 3.12.7
+   * GSAP 3.13.0
    * https://gsap.com
    *
    * @license Copyright 2008-2025, GreenSock. All rights reserved.
-   * Subject to the terms at https://gsap.com/standard-license or for
-   * Club GSAP members, the agreement issued with that membership.
+   * Subject to the terms at https://gsap.com/standard-license
    * @author: Jack Doyle, jack@greensock.com
   */
   var _config = {
@@ -32623,9 +32623,12 @@ module.exports = Yaml;
       tween && tween._lazy && (tween.render(tween._lazy[0], tween._lazy[1], true)._lazy = 0);
     }
   },
+      _isRevertWorthy = function _isRevertWorthy(animation) {
+    return !!(animation._initted || animation._startAt || animation.add);
+  },
       _lazySafeRender = function _lazySafeRender(animation, time, suppressEvents, force) {
     _lazyTweens.length && !_reverting && _lazyRender();
-    animation.render(time, suppressEvents, force || _reverting && time < 0 && (animation._initted || animation._startAt));
+    animation.render(time, suppressEvents, force || !!(_reverting && time < 0 && _isRevertWorthy(animation)));
     _lazyTweens.length && !_reverting && _lazyRender();
   },
       _numericIfPossible = function _numericIfPossible(value) {
@@ -34083,7 +34086,7 @@ module.exports = Yaml;
       var tTime = this.parent && this._ts ? _parentToChildTotalTime(this.parent._time, this) : this._tTime;
       this._rts = +value || 0;
       this._ts = this._ps || value === -_tinyNum ? 0 : this._rts;
-      this.totalTime(_clamp(-Math.abs(this._delay), this._tDur, tTime), suppressEvents !== false);
+      this.totalTime(_clamp(-Math.abs(this._delay), this.totalDuration(), tTime), suppressEvents !== false);
 
       _setEnd(this);
 
@@ -34140,7 +34143,7 @@ module.exports = Yaml;
       var prevIsReverting = _reverting;
       _reverting = config;
 
-      if (this._initted || this._startAt) {
+      if (_isRevertWorthy(this)) {
         this.timeline && this.timeline.revert(config);
         this.totalTime(-0.01, config.suppressEvents);
       }
@@ -34510,7 +34513,7 @@ module.exports = Yaml;
           prevTime = 0;
         }
 
-        if (!prevTime && time && !suppressEvents && !iteration) {
+        if (!prevTime && tTime && !suppressEvents && !prevIteration) {
           _callback(this, "onStart");
 
           if (this._tTime !== tTime) {
@@ -34552,7 +34555,7 @@ module.exports = Yaml;
                 return this.render(totalTime, suppressEvents, force);
               }
 
-              child.render(child._ts > 0 ? (adjustedTime - child._start) * child._ts : (child._dirty ? child.totalDuration() : child._tDur) + (adjustedTime - child._start) * child._ts, suppressEvents, force || _reverting && (child._initted || child._startAt));
+              child.render(child._ts > 0 ? (adjustedTime - child._start) * child._ts : (child._dirty ? child.totalDuration() : child._tDur) + (adjustedTime - child._start) * child._ts, suppressEvents, force || _reverting && _isRevertWorthy(child));
 
               if (time !== this._time || !this._ts && !prevPaused) {
                 pauseTween = 0;
@@ -35631,7 +35634,7 @@ module.exports = Yaml;
           this.ratio = ratio = 1 - ratio;
         }
 
-        if (time && !prevTime && !suppressEvents && !iteration) {
+        if (!prevTime && tTime && !suppressEvents && !prevIteration) {
           _callback(this, "onStart");
 
           if (this._tTime !== tTime) {
@@ -36515,6 +36518,7 @@ module.exports = Yaml;
       _buildModifierPlugin = function _buildModifierPlugin(name, modifier) {
     return {
       name: name,
+      headless: 1,
       rawVars: 1,
       init: function init(target, vars, tween) {
         tween._onInit = function (tween) {
@@ -36571,6 +36575,7 @@ module.exports = Yaml;
     }
   }, {
     name: "endArray",
+    headless: 1,
     init: function init(target, value) {
       var i = value.length;
 
@@ -36579,7 +36584,7 @@ module.exports = Yaml;
       }
     }
   }, _buildModifierPlugin("roundProps", _roundModifier), _buildModifierPlugin("modifiers"), _buildModifierPlugin("snap", snap)) || _gsap;
-  Tween.version = Timeline.version = gsap.version = "3.12.7";
+  Tween.version = Timeline.version = gsap.version = "3.13.0";
   _coreReady = 1;
   _windowExists() && _wake();
   var Power0 = _easeMap.Power0,
@@ -37024,6 +37029,10 @@ module.exports = Yaml;
     pt.e = end;
     start += "";
     end += "";
+
+    if (end.substring(0, 6) === "var(--") {
+      end = _getComputedProperty(target, end.substring(4, end.indexOf(")")));
+    }
 
     if (end === "auto") {
       startValue = target.style[prop];
@@ -37879,6 +37888,11 @@ module.exports = Yaml;
 
           if (isTransformRelated) {
             this.styles.save(p);
+
+            if (type === "string" && endValue.substring(0, 6) === "var(--") {
+              endValue = _getComputedProperty(target, endValue.substring(4, endValue.indexOf(")")));
+              endNum = parseFloat(endValue);
+            }
 
             if (!transformPropTween) {
               cache = target._gsap;
@@ -47691,78 +47705,85 @@ if (typeof define === 'function' && define.amd) {
 }(jQuery, window.Hammer));
 ;
 /*!
- * jQuery Mousewheel 3.1.13
- *
- * Copyright jQuery Foundation and other contributors
- * Released under the MIT license
- * http://jquery.org/license
+ * jQuery Mousewheel 3.2.2
+ * Copyright OpenJS Foundation and other contributors
  */
 
-(function (factory) {
-    if ( typeof define === 'function' && define.amd ) {
+( function( factory ) {
+    "use strict";
+
+    if ( typeof define === "function" && define.amd ) {
+
         // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
-    } else if (typeof exports === 'object') {
+        define( [ "jquery" ], factory );
+    } else if ( typeof exports === "object" ) {
+
         // Node/CommonJS style for Browserify
         module.exports = factory;
     } else {
-        // Browser globals
-        factory(jQuery);
-    }
-}(function ($) {
 
-    var toFix  = ['wheel', 'mousewheel', 'DOMMouseScroll', 'MozMousePixelScroll'],
-        toBind = ( 'onwheel' in document || document.documentMode >= 9 ) ?
-                    ['wheel'] : ['mousewheel', 'DomMouseScroll', 'MozMousePixelScroll'],
-        slice  = Array.prototype.slice,
-        nullLowestDeltaTimeout, lowestDelta;
+        // Browser globals
+        factory( jQuery );
+    }
+} )( function( $ ) {
+    "use strict";
+
+    var nullLowestDeltaTimeout, lowestDelta,
+        modernEvents = !!$.fn.on,
+        toFix  = [ "wheel", "mousewheel", "DOMMouseScroll", "MozMousePixelScroll" ],
+        toBind = ( "onwheel" in window.document || window.document.documentMode >= 9 ) ?
+            [ "wheel" ] : [ "mousewheel", "DomMouseScroll", "MozMousePixelScroll" ],
+        slice  = Array.prototype.slice;
 
     if ( $.event.fixHooks ) {
         for ( var i = toFix.length; i; ) {
-            $.event.fixHooks[ toFix[--i] ] = $.event.mouseHooks;
+            $.event.fixHooks[ toFix[ --i ] ] = $.event.mouseHooks;
         }
     }
 
     var special = $.event.special.mousewheel = {
-        version: '3.1.12',
+        version: "3.2.2",
 
         setup: function() {
             if ( this.addEventListener ) {
                 for ( var i = toBind.length; i; ) {
-                    this.addEventListener( toBind[--i], handler, false );
+                    this.addEventListener( toBind[ --i ], handler, false );
                 }
             } else {
                 this.onmousewheel = handler;
             }
+
             // Store the line height and page height for this particular element
-            $.data(this, 'mousewheel-line-height', special.getLineHeight(this));
-            $.data(this, 'mousewheel-page-height', special.getPageHeight(this));
+            $.data( this, "mousewheel-line-height", special.getLineHeight( this ) );
+            $.data( this, "mousewheel-page-height", special.getPageHeight( this ) );
         },
 
         teardown: function() {
             if ( this.removeEventListener ) {
                 for ( var i = toBind.length; i; ) {
-                    this.removeEventListener( toBind[--i], handler, false );
+                    this.removeEventListener( toBind[ --i ], handler, false );
                 }
             } else {
                 this.onmousewheel = null;
             }
+
             // Clean up the data we added to the element
-            $.removeData(this, 'mousewheel-line-height');
-            $.removeData(this, 'mousewheel-page-height');
+            $.removeData( this, "mousewheel-line-height" );
+            $.removeData( this, "mousewheel-page-height" );
         },
 
-        getLineHeight: function(elem) {
-            var $elem = $(elem),
-                $parent = $elem['offsetParent' in $.fn ? 'offsetParent' : 'parent']();
-            if (!$parent.length) {
-                $parent = $('body');
+        getLineHeight: function( elem ) {
+            var $elem = $( elem ),
+                $parent = $elem[ "offsetParent" in $.fn ? "offsetParent" : "parent" ]();
+            if ( !$parent.length ) {
+                $parent = $( "body" );
             }
-            return parseInt($parent.css('fontSize'), 10) || parseInt($elem.css('fontSize'), 10) || 16;
+            return parseInt( $parent.css( "fontSize" ), 10 ) ||
+                parseInt( $elem.css( "fontSize" ), 10 ) || 16;
         },
 
-        getPageHeight: function(elem) {
-            return $(elem).height();
+        getPageHeight: function( elem ) {
+            return $( elem ).height();
         },
 
         settings: {
@@ -47771,56 +47792,68 @@ if (typeof define === 'function' && define.amd) {
         }
     };
 
-    $.fn.extend({
-        mousewheel: function(fn) {
-            return fn ? this.bind('mousewheel', fn) : this.trigger('mousewheel');
+    $.fn.extend( {
+        mousewheel: function( fn ) {
+            return fn ?
+                this[ modernEvents ? "on" : "bind" ]( "mousewheel", fn ) :
+                this.trigger( "mousewheel" );
         },
 
-        unmousewheel: function(fn) {
-            return this.unbind('mousewheel', fn);
+        unmousewheel: function( fn ) {
+            return this[ modernEvents ? "off" : "unbind" ]( "mousewheel", fn );
         }
-    });
+    } );
 
 
-    function handler(event) {
+    function handler( event ) {
         var orgEvent   = event || window.event,
-            args       = slice.call(arguments, 1),
+            args       = slice.call( arguments, 1 ),
             delta      = 0,
             deltaX     = 0,
             deltaY     = 0,
-            absDelta   = 0,
-            offsetX    = 0,
-            offsetY    = 0;
-        event = $.event.fix(orgEvent);
-        event.type = 'mousewheel';
+            absDelta   = 0;
+        event = $.event.fix( orgEvent );
+        event.type = "mousewheel";
 
         // Old school scrollwheel delta
-        if ( 'detail'      in orgEvent ) { deltaY = orgEvent.detail * -1;      }
-        if ( 'wheelDelta'  in orgEvent ) { deltaY = orgEvent.wheelDelta;       }
-        if ( 'wheelDeltaY' in orgEvent ) { deltaY = orgEvent.wheelDeltaY;      }
-        if ( 'wheelDeltaX' in orgEvent ) { deltaX = orgEvent.wheelDeltaX * -1; }
+        if ( "detail" in orgEvent ) {
+            deltaY = orgEvent.detail * -1;
+        }
+        if ( "wheelDelta" in orgEvent ) {
+            deltaY = orgEvent.wheelDelta;
+        }
+        if ( "wheelDeltaY" in orgEvent ) {
+            deltaY = orgEvent.wheelDeltaY;
+        }
+        if ( "wheelDeltaX" in orgEvent ) {
+            deltaX = orgEvent.wheelDeltaX * -1;
+        }
 
         // Firefox < 17 horizontal scrolling related to DOMMouseScroll event
-        if ( 'axis' in orgEvent && orgEvent.axis === orgEvent.HORIZONTAL_AXIS ) {
+        if ( "axis" in orgEvent && orgEvent.axis === orgEvent.HORIZONTAL_AXIS ) {
             deltaX = deltaY * -1;
             deltaY = 0;
         }
 
-        // Set delta to be deltaY or deltaX if deltaY is 0 for backwards compatabilitiy
+        // Set delta to be deltaY or deltaX if deltaY is 0 for backwards compatability
         delta = deltaY === 0 ? deltaX : deltaY;
 
         // New school wheel delta (wheel event)
-        if ( 'deltaY' in orgEvent ) {
+        if ( "deltaY" in orgEvent ) {
             deltaY = orgEvent.deltaY * -1;
             delta  = deltaY;
         }
-        if ( 'deltaX' in orgEvent ) {
+        if ( "deltaX" in orgEvent ) {
             deltaX = orgEvent.deltaX;
-            if ( deltaY === 0 ) { delta  = deltaX * -1; }
+            if ( deltaY === 0 ) {
+                delta  = deltaX * -1;
+            }
         }
 
         // No change actually happened, no reason to go any further
-        if ( deltaY === 0 && deltaX === 0 ) { return; }
+        if ( deltaY === 0 && deltaX === 0 ) {
+            return;
+        }
 
         // Need to convert lines and pages to pixels if we aren't already in pixels
         // There are three delta modes:
@@ -47828,31 +47861,32 @@ if (typeof define === 'function' && define.amd) {
         //   * deltaMode 1 is by lines
         //   * deltaMode 2 is by pages
         if ( orgEvent.deltaMode === 1 ) {
-            var lineHeight = $.data(this, 'mousewheel-line-height');
+            var lineHeight = $.data( this, "mousewheel-line-height" );
             delta  *= lineHeight;
             deltaY *= lineHeight;
             deltaX *= lineHeight;
         } else if ( orgEvent.deltaMode === 2 ) {
-            var pageHeight = $.data(this, 'mousewheel-page-height');
+            var pageHeight = $.data( this, "mousewheel-page-height" );
             delta  *= pageHeight;
             deltaY *= pageHeight;
             deltaX *= pageHeight;
         }
 
         // Store lowest absolute delta to normalize the delta values
-        absDelta = Math.max( Math.abs(deltaY), Math.abs(deltaX) );
+        absDelta = Math.max( Math.abs( deltaY ), Math.abs( deltaX ) );
 
         if ( !lowestDelta || absDelta < lowestDelta ) {
             lowestDelta = absDelta;
 
             // Adjust older deltas if necessary
-            if ( shouldAdjustOldDeltas(orgEvent, absDelta) ) {
+            if ( shouldAdjustOldDeltas( orgEvent, absDelta ) ) {
                 lowestDelta /= 40;
             }
         }
 
         // Adjust older deltas if necessary
-        if ( shouldAdjustOldDeltas(orgEvent, absDelta) ) {
+        if ( shouldAdjustOldDeltas( orgEvent, absDelta ) ) {
+
             // Divide all the things by 40!
             delta  /= 40;
             deltaX /= 40;
@@ -47860,57 +47894,58 @@ if (typeof define === 'function' && define.amd) {
         }
 
         // Get a whole, normalized value for the deltas
-        delta  = Math[ delta  >= 1 ? 'floor' : 'ceil' ](delta  / lowestDelta);
-        deltaX = Math[ deltaX >= 1 ? 'floor' : 'ceil' ](deltaX / lowestDelta);
-        deltaY = Math[ deltaY >= 1 ? 'floor' : 'ceil' ](deltaY / lowestDelta);
+        delta  = Math[ delta  >= 1 ? "floor" : "ceil" ]( delta  / lowestDelta );
+        deltaX = Math[ deltaX >= 1 ? "floor" : "ceil" ]( deltaX / lowestDelta );
+        deltaY = Math[ deltaY >= 1 ? "floor" : "ceil" ]( deltaY / lowestDelta );
 
         // Normalise offsetX and offsetY properties
         if ( special.settings.normalizeOffset && this.getBoundingClientRect ) {
             var boundingRect = this.getBoundingClientRect();
-            offsetX = event.clientX - boundingRect.left;
-            offsetY = event.clientY - boundingRect.top;
+            event.offsetX = event.clientX - boundingRect.left;
+            event.offsetY = event.clientY - boundingRect.top;
         }
 
         // Add information to the event object
         event.deltaX = deltaX;
         event.deltaY = deltaY;
         event.deltaFactor = lowestDelta;
-        event.offsetX = offsetX;
-        event.offsetY = offsetY;
+
         // Go ahead and set deltaMode to 0 since we converted to pixels
         // Although this is a little odd since we overwrite the deltaX/Y
         // properties with normalized deltas.
         event.deltaMode = 0;
 
         // Add event and delta to the front of the arguments
-        args.unshift(event, delta, deltaX, deltaY);
+        args.unshift( event, delta, deltaX, deltaY );
 
-        // Clearout lowestDelta after sometime to better
+        // Clear out lowestDelta after sometime to better
         // handle multiple device types that give different
         // a different lowestDelta
         // Ex: trackpad = 3 and mouse wheel = 120
-        if (nullLowestDeltaTimeout) { clearTimeout(nullLowestDeltaTimeout); }
-        nullLowestDeltaTimeout = setTimeout(nullLowestDelta, 200);
+        if ( nullLowestDeltaTimeout ) {
+            window.clearTimeout( nullLowestDeltaTimeout );
+        }
+        nullLowestDeltaTimeout = window.setTimeout( function() {
+            lowestDelta = null;
+        }, 200 );
 
-        return ($.event.dispatch || $.event.handle).apply(this, args);
+        return ( $.event.dispatch || $.event.handle ).apply( this, args );
     }
 
-    function nullLowestDelta() {
-        lowestDelta = null;
-    }
+    function shouldAdjustOldDeltas( orgEvent, absDelta ) {
 
-    function shouldAdjustOldDeltas(orgEvent, absDelta) {
-        // If this is an older event and the delta is divisable by 120,
+        // If this is an older event and the delta is divisible by 120,
         // then we are assuming that the browser is treating this as an
         // older mouse wheel event and that we should divide the deltas
         // by 40 to try and get a more usable deltaFactor.
         // Side note, this actually impacts the reported scroll distance
         // in older browsers and can cause scrolling to be slower than native.
         // Turn this off by setting $.event.special.mousewheel.settings.adjustOldDeltas to false.
-        return special.settings.adjustOldDeltas && orgEvent.type === 'mousewheel' && absDelta % 120 === 0;
+        return special.settings.adjustOldDeltas && orgEvent.type === "mousewheel" &&
+            absDelta % 120 === 0;
     }
 
-}));
+} );
 
 ;
 /****************************************************************************
@@ -54019,7 +54054,7 @@ See https://ilyashubin.github.io/scrollbooster/
 
 ;
 //! moment-timezone.js
-//! version : 0.5.47
+//! version : 0.5.48
 //! Copyright (c) JS Foundation and other contributors
 //! license : MIT
 //! github.com/moment/moment-timezone
@@ -54049,7 +54084,7 @@ See https://ilyashubin.github.io/scrollbooster/
 	// 	return moment;
 	// }
 
-	var VERSION = "0.5.47",
+	var VERSION = "0.5.48",
 		zones = {},
 		links = {},
 		countries = {},
@@ -54744,7 +54779,7 @@ See https://ilyashubin.github.io/scrollbooster/
 	}
 
 	loadData({
-		"version": "2025a",
+		"version": "2025b",
 		"zones": [
 			"Africa/Abidjan|GMT|0|0||48e5",
 			"Africa/Nairobi|EAT|-30|0||47e5",
@@ -54771,6 +54806,7 @@ See https://ilyashubin.github.io/scrollbooster/
 			"America/Chicago|CST CDT|60 50|01010101010101010101010|22bI0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|92e5",
 			"America/Chihuahua|MST MDT CST|70 60 60|0101012|22mV0 1lb0 14p0 1nX0 11B0 1nX0|81e4",
 			"America/Ciudad_Juarez|MST MDT CST|70 60 60|010101201010101010101010|22bJ0 1zb0 Rd0 1zb0 Op0 1wn0 cm0 EP0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|",
+			"America/Coyhaique|-03 -04|30 40|01010101010|22mP0 11B0 1nX0 11B0 1nX0 14p0 1lb0 11B0 1qL0 11B0|",
 			"America/Phoenix|MST|70|0||42e5",
 			"America/Whitehorse|PST PDT MST|80 70 70|012|22bK0 1z90|23e3",
 			"America/New_York|EST EDT|50 40|01010101010101010101010|22bH0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0|21e6",
@@ -55390,7 +55426,7 @@ See https://ilyashubin.github.io/scrollbooster/
 			"CH|Europe/Zurich",
 			"CI|Africa/Abidjan",
 			"CK|Pacific/Rarotonga",
-			"CL|America/Santiago America/Punta_Arenas Pacific/Easter",
+			"CL|America/Santiago America/Coyhaique America/Punta_Arenas Pacific/Easter",
 			"CM|Africa/Lagos Africa/Douala",
 			"CN|Asia/Shanghai Asia/Urumqi",
 			"CO|America/Bogota",
@@ -60603,6 +60639,44 @@ module.exports = g;
         return true;
     };
 
+    /****************************************************************************************
+    $.getTextWidth(text:STRING or []STRING, options:{} OR NUMBER)
+    Return the (maximum) length of text
+    options = font-size (NUMBER) or {fontFamily, fontSize, italic, bold, padding}
+    ****************************************************************************************/
+    $._getTextWidthCanvas = null;
+    $.getTextWidth = $.getTextWidth || function(text, options = {}){
+        $._getTextWidthCanvas = $._getTextWidthCanvas || $('<canvas></canvas>').get(0);
+        const ctx = $._getTextWidthCanvas.getContext("2d");
+
+        let textList = Array.isArray( text ) ? text : [text],
+            result = 0;
+
+        if (typeof options == 'number')
+            options = {fontSize: options};
+
+        options = $.extend({
+            fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color',
+            fontSize  : 12},
+            options
+        );
+
+        options.fontSize = options.fontSize + (typeof options.fontSize == 'number' ? 'px' : '');
+
+        ctx.font = options.fontSize + ' ' + options.fontFamily;
+        if (options.italic)
+            ctx.font = 'italic ' + ctx.font;
+        if (options.bold)
+            ctx.font = 'bold ' + ctx.font;
+
+        textList.forEach( txt => result = Math.max( result, ctx.measureText(txt).width ) );
+
+        return result + (options.padding || 0);
+    };
+
+
+
+
 
     //$.parentOptionsToInherit = []ID = id of options that modal-content can inherit from the modal itself
     $.parentOptionsToInherit = ['small'];
@@ -60920,7 +60994,7 @@ module.exports = g;
             function buildFormControlGroup( options, $parent ){
                 return $parent
                            .attr('id', options.id)
-                           .addClass('flex-column')
+                           .addClass(options.horizontal ? 'flex-row' : 'flex-column')
                            ._bsAppendContent(options.content, null, null, options);
             }
 
@@ -61032,7 +61106,10 @@ module.exports = g;
 
                     case 'formControlGroup' :
                     case 'inputgroup'       :   buildFunc = buildFormControlGroup;  addBorder = true; insideFormGroup = true; buildInsideParent = true; break;
-//                    case 'xx'               :   buildFunc = $.bsXx;               break;
+
+                    case 'content'          :   buildFunc = (typeof options.content === "function") ? options.content : function(){ return options.content; }; break;
+
+                  //case 'xx'               :   buildFunc = $.bsXx;               break;
 
                     default                 :   buildFunc = $.fn._bsAddHtml;        noPadding = true; buildInsideParent = true;
                 }
@@ -61097,8 +61174,9 @@ module.exports = g;
                             .appendTo( $inputGroup );
                 }
                 else
-                    //No-border => the input-group is just a container to keep vertival distance => no horizontal padding
-                    $inputGroup.addClass('px-0');
+                    //No-border => the input-group is just a container to keep vertival distance => no horizontal padding unless horizontalPadding = true
+                    if (!options.horizontalPadding)
+                        $inputGroup.addClass('px-0');
 
                 if (hasLabel)
                     $parent.addClass('child-with-label');
@@ -63152,6 +63230,8 @@ uri         : {default: "Please enter a valid URI"}
     A header can contain any of the following icons:
     back (<)
     forward (>)
+    fullScreenOn
+    fullScreenOff
     extend (^)
     diminish
     pin
@@ -63208,8 +63288,11 @@ uri         : {default: "Please enter a valid URI"}
                 class: square ? 'header-icon-selected' : null
             },
 
-            extend  : square ? 'fa-square-plus' : 'fa-chevron-circle-up',
+            extend  : square ? 'fa-square-plus'  : 'fa-chevron-circle-up',
             diminish: square ? 'fa-square-minus' : 'fa-chevron-circle-down',
+
+            fullScreenOn : square ? 'fa-expand'   : [ $.FONTAWESOME_PREFIX_STANDARD + ' fa-expand fa-inside-circle2', $.FONTAWESOME_PREFIX_STANDARD + ' fa-circle'],
+            fullScreenOff: square ? 'fa-compress' : [ $.FONTAWESOME_PREFIX_STANDARD + ' fa-compress fa-inside-circle2', $.FONTAWESOME_PREFIX_STANDARD + ' fa-circle'],
 
 
             new     : square ? 'fa-window-maximize' : [ $.FONTAWESOME_PREFIX_STANDARD + ' fa-window-maximize fa-inside-circle2', $.FONTAWESOME_PREFIX_STANDARD + ' fa-circle'],
@@ -63283,7 +63366,7 @@ uri         : {default: "Please enter a valid URI"}
 
             //Add icons
             let headerIcons = useSquareIcons ? bsHeaderIconsSquare : bsHeaderIcons;
-            ['back', 'forward', 'pin', 'unpin', 'extend', 'diminish', 'new', 'warning', 'info', 'help', 'close'].forEach( (id) => {
+            ['back', 'forward', 'pin', 'unpin', 'diminish', 'extend', 'fullScreenOn', 'fullScreenOff', 'new', 'warning', 'info', 'help', 'close'].forEach( (id) => {
                 let iconOptions = options.icons[id];
                 if (iconOptions && (iconOptions.onClick || (typeof iconOptions == 'function'))){
                     if (typeof iconOptions == 'function')
@@ -64417,10 +64500,13 @@ jquery-bootstrap-modal-promise.js
 
         alwaysMaxHeight: BOOLEAN - If true the modal is always the full height of it parent
 
+        allowFullScreen: BOOLEAN - if true the largest size (normal or extended) gets the possibility to be displayed in full-screen
+        noReopenFullScreen: BOOLEAN - if false and allowFullScreen = true and the modal was in full-screen when closed => It will reopen in full-screen. If true the modal will reopen in prevoius size (minimized, normal or extended)
 
         innerHeight     : The fixed height of the content
         innerMaxHeight  : The fixed max-height of the content
 
+        fitWidth
         flexWidth
         extraWidth
         megaWidth
@@ -64456,6 +64542,10 @@ jquery-bootstrap-modal-promise.js
         closeText
         noCloseIconOnHeader
         historyList         - The modal gets backward and forward icons in header to go backward and forward in the historyList. See demo and https://github.com/fcoo/history.js
+
+        keepScrollWhenReopen: false, - if true the scrolling of the content is reused. If false all content starts at scroll 0,0 when shown
+
+
 
     **********************************************************/
     var modalId = 0,
@@ -64495,6 +64585,7 @@ jquery-bootstrap-modal-promise.js
     By default it return the original options but they can be overwriten by applications/packages
     **********************************************************/
     $.MODAL_ADJUST_OPTIONS = function(modalOptions/*, modal*/){
+
         return modalOptions;
     };
     $.MODAL_NO_VERTICAL_MARGIN = false;
@@ -64511,10 +64602,10 @@ jquery-bootstrap-modal-promise.js
     function adjustModalMaxHeight( $modalContent ){
         var $modalContents = $modalContent || $('.modal-content.modal-flex-height');
 
-
         //For each $modalContent: Get the current data with options on relative size and set the height and max-height
         $modalContents.each(function(index, elem){
             var $modalContent = $(elem);
+
             $.each(modalSizeClassName, function(size, className){
                 if ($modalContent.hasClass(className)){
                     //The current percent/offset info is in .data('relativeHeightOptions')[size];
@@ -64531,7 +64622,8 @@ jquery-bootstrap-modal-promise.js
                         relativeOptions[id] = $.isFunction(value) ? value($modalContent) : value;
                     });
 
-                    var maxHeight = relativeOptions.relativeHeight * relativeOptions.parentContainerHeight - relativeOptions.relativeHeightOffset;
+                    const maxHeight = relativeOptions.relativeHeight * relativeOptions.parentContainerHeight - relativeOptions.relativeHeightOffset;
+
                     $modalContent.css({
                         'max-height': maxHeight+'px',
                         'height'    : maxHeight+'px'
@@ -64551,6 +64643,7 @@ jquery-bootstrap-modal-promise.js
     3: fixed height. options.height
 
     The width of a modal is by default 300px.
+    options.fitWidth  : If true the width of the modal is set by the with of the content
     options.flexWidth : If true the width of the modal will adjust to the width of the browser up to 500px
     options.extraWidth: Only when flexWidth is set: If true the width of the modal will adjust to the width of the browser up to 800px
     options.megaWidth : Only when flexWidth is set: If true the width of the modal will adjust to the width of the browser up to 1200px
@@ -64569,6 +64662,7 @@ jquery-bootstrap-modal-promise.js
 
     function getWidthFromOptions( options ){
         return {
+            fitWidth            : !!options.fitWidth,
             flexWidth           : !!options.flexWidth,
             extraWidth          : !!options.extraWidth,
             megaWidth           : !!options.megaWidth,
@@ -64612,7 +64706,6 @@ jquery-bootstrap-modal-promise.js
         if (currentModal)
             currentModal._bsModalCloseElements();
 
-
         openModals++;
         this.previousModal = currentModal;
         currentModal = this;
@@ -64654,6 +64747,10 @@ jquery-bootstrap-modal-promise.js
     //hide_bs_modal - called when a modal is closing
     function hide_bs_modal() {
         currentModal = this.previousModal;
+
+        //If in full-screen mode and dont reopen in full-screen => reset back
+        if (this.bsModal.isFullScreenMode && this.bsModal.noReopenFullScreen)
+            this._bsModalFullScreenOff();
 
         //Close elements
         this._bsModalCloseElements();
@@ -64722,13 +64819,23 @@ jquery-bootstrap-modal-promise.js
     ******************************************************/
     var bsModal_prototype = {
         show  : function(){
-                    this.modal('show');
+            this.modal('show');
 
-                    this.data('bsModalDialog')._bsModalSetHeightAndWidth();
+            this.data('bsModalDialog')._bsModalSetHeightAndWidth();
 
-                    if (this.bsModal.onChange)
-                        this.bsModal.onChange( this.bsModal );
-                },
+            if (this.bsModal.onChange)
+                this.bsModal.onChange( this.bsModal );
+
+            //Scroll all "body" back if keepScrollWhenReopen = false is set
+            if (!this.keepScrollWhenReopen)
+                ['', 'extended', 'minimized'].forEach( size => {
+                    let obj = size ? this.bsModal[size] : this.bsModal;
+                    if (obj && obj.$body){
+                        obj.$body.scrollTop(0);
+                        obj.$body.scrollLeft(0);
+                    }
+                }, this);
+        },
 
         _close: function(){
             this.modal('hide');
@@ -64787,7 +64894,6 @@ jquery-bootstrap-modal-promise.js
                 }
             }
             //***********************************************************
-
             //Update header
             var $iconContainer = this.bsModal.$header.find('.header-icon-container').detach();
             updateElement(this.bsModal.$header, options, '_bsHeaderAndIcons', $.BSMODAL_USE_SQUARE_ICONS);
@@ -64806,6 +64912,8 @@ jquery-bootstrap-modal-promise.js
                     updateElement(containers.$footer,       contentOptions.footer,       '_bsAddHtml' );
                 }
             }, this);
+            
+            
             return this;
         },
 
@@ -65034,7 +65142,8 @@ jquery-bootstrap-modal-promise.js
 
         function useNormalWidth(options = {}){
             return (options.width == true) ||
-                    (   (options.flexWidth == undefined) &&
+                    (   (options.fitWidth == undefined) &&
+                        (options.flexWidth == undefined) &&
                         (options.extraWidth == undefined) &&
                         (options.megaWidth == undefined) &&
                         (options.maxWidth == undefined) &&
@@ -65060,6 +65169,7 @@ jquery-bootstrap-modal-promise.js
                     .addClass(options.modalContentClassName)
                     .toggleClass('no-shadow', !!options.noShadow)
                     .modernizrOff('modal-pinned')
+                    .modernizrOff('modal-set-to-full-screen')
                     .appendTo( this );
 
         //Set modal-[SIZE]-[STATE] class
@@ -65089,19 +65199,19 @@ jquery-bootstrap-modal-promise.js
         this._bsModalSetSizeClass(initSize);
         this._bsModalSetHeightAndWidth();
 
-        var modalExtend       = $.proxy( this._bsModalExtend,       this),
-            modalDiminish     = $.proxy( this._bsModalDiminish,     this),
-            modalToggleHeight = $.proxy( this._bsModalToggleHeight, this),
-            modalPin          = $.proxy( this._bsModalPin,          this),
-            modalUnpin        = $.proxy( this._bsModalUnpin,        this),
+        var modalExtend       = this._bsModalExtend.bind(this),
+            modalDiminish     = this._bsModalDiminish.bind(this),
+            modalToggleHeight = this._bsModalToggleHeight.bind(this),
+            modalPin          = this._bsModalPin.bind(this),
+            modalUnpin        = this._bsModalUnpin.bind(this),
             iconExtendClassName   = '',
             iconDiminishClassName = '',
             multiSize = this.bsModal.sizes > MODAL_SIZE_NORMAL;
 
         //If multi size: Set the class-name for the extend and diminish icons.
         if (multiSize){
-            iconExtendClassName   = this.bsModal.sizes & MODAL_SIZE_EXTENDED  ? 'hide-for-modal-extended'  : 'hide-for-modal-normal';
-            iconDiminishClassName = this.bsModal.sizes & MODAL_SIZE_MINIMIZED ? 'hide-for-modal-minimized' : 'hide-for-modal-normal';
+            iconExtendClassName   = 'hide-for-modal-set-to-full-screen ' + (this.bsModal.sizes & MODAL_SIZE_EXTENDED  ? 'hide-for-modal-extended'  : 'hide-for-modal-normal');
+            iconDiminishClassName = 'hide-for-modal-set-to-full-screen ' + (this.bsModal.sizes & MODAL_SIZE_MINIMIZED ? 'hide-for-modal-minimized' : 'hide-for-modal-normal');
         }
 
         this.bsModal.onPin = options.onPin;
@@ -65118,14 +65228,18 @@ jquery-bootstrap-modal-promise.js
 
             //Icons
             icons    : {
-                pin     : { className: 'hide-for-modal-pinned', onClick: options.onPin ? modalPin      : null },
-                unpin   : { className: 'show-for-modal-pinned', onClick: options.onPin ? modalUnpin    : null },
-                extend  : { className: iconExtendClassName,     onClick: multiSize ? modalExtend   : null, altEvents:'swipeup'   },
-                diminish: { className: iconDiminishClassName,   onClick: multiSize ? modalDiminish : null, altEvents:'swipedown' },
-                new     : {                                     onClick: options.onNew ? $.proxy(options.onNew, this) : null },
-                info    : {                                     onClick: options.onInfo ? $.proxy(options.onInfo, this) : null },
-                warning : {                                     onClick: options.onWarning ? $.proxy(options.onWarning, this) : null },
-                help    : {                                     onClick: options.onHelp ? $.proxy(options.onHelp, this) : null },
+                pin             : { className: 'hide-for-modal-pinned', onClick: options.onPin ? modalPin   : null },
+                unpin           : { className: 'show-for-modal-pinned', onClick: options.onPin ? modalUnpin : null },
+
+                fullScreenOn    : { className: 'modal-header-icon-full-screen-on hide-for-modal-set-to-full-screen',  onClick: options.allowFullScreen ? this._bsModalFullScreenOn.bind(this)  : null, altEvents:'swipeup'   },
+                fullScreenOff   : { className: 'modal-header-icon-full-screen-off show-for-modal-set-to-full-screen', onClick: options.allowFullScreen ? this._bsModalFullScreenOff.bind(this) : null, altEvents:'swipedown' },
+
+                extend          : { className: iconExtendClassName,     onClick: multiSize ? modalExtend   : null,                        altEvents:'swipeup'   },
+                diminish        : { className: iconDiminishClassName,   onClick: multiSize ? modalDiminish : null,                        altEvents:'swipedown' },
+                new             : {                                     onClick: options.onNew     ? options.onNew.bind(this)     : null                        },
+                info            : {                                     onClick: options.onInfo    ? options.onInfo.bind(this)    : null                        },
+                warning         : {                                     onClick: options.onWarning ? options.onWarning.bind(this) : null                        },
+                help            : {                                     onClick: options.onHelp    ? options.onHelp.bind(this)    : null                        },
             }
         }, options );
 
@@ -65363,6 +65477,7 @@ jquery-bootstrap-modal-promise.js
 
         //Set width
         $modalDialog
+            .toggleClass('modal-fit-width'              , cssWidth.fitWidth             )
             .toggleClass('modal-flex-width'             , cssWidth.flexWidth            )
             .toggleClass('modal-extra-width'            , cssWidth.extraWidth           )
             .toggleClass('modal-mega-width'             , cssWidth.megaWidth            )
@@ -65372,6 +65487,12 @@ jquery-bootstrap-modal-promise.js
             .toggleClass('modal-full-screen-with-border', cssWidth.fullScreenWithBorder )
             .css('width', cssWidth.width ? cssWidth.width : '' );
 
+
+        if (this.bsModal.isFullScreenMode){
+            this._bsModalFullScreenOff();
+            this._bsModalFullScreenOn();
+        }            
+
         //Call onChange (if any)
         if (bsModal.onChange)
             bsModal.onChange( bsModal );
@@ -65379,7 +65500,8 @@ jquery-bootstrap-modal-promise.js
 
     /******************************************************
     _bsModalExtend, _bsModalDiminish, _bsModalToggleHeight,
-    _bsModalSetSize, _bsModalToggleMinimizedHeader
+    _bsModalSetSize, _bsModalToggleMinimizedHeader,
+    _bsModalFullScreenOn, _bsModalFullScreenOff
     Methods to change extended-mode
     ******************************************************/
     $.fn._bsModalExtend = function(){
@@ -65414,15 +65536,6 @@ jquery-bootstrap-modal-promise.js
 
         this._bsModalSetSizeClass(size);
         this._bsModalSetHeightAndWidth();
-
-        /*
-        NOTE: 2021-04-16
-        Original this methods returns false to prevent onclick-event on the header.
-        That prevented other more general events to be fired. Eg. in fcoo/leaflet-bootstrap
-        where the focus of a popup window was set when the window was clicked
-        It appear not to have any other effect when removed.
-        */
-        //return false; //Prevent onclick-event on header
     };
 
     //hid/show header for size = minimized
@@ -65430,6 +65543,87 @@ jquery-bootstrap-modal-promise.js
         if (this._bsModalGetSize() == MODAL_SIZE_MINIMIZED)
             get$modalContent(this).toggleClass('modal-minimized-hide-header');
     };
+
+    //Toggle full screen
+    $.fn._bsModalFullScreenOn = function(){
+        let bsModal       = this.bsModal,
+            $modalDialog  = bsModal.$modalDialog,
+            isExtended    = $modalDialog.hasClass('modal-full-screen-at-extended'),
+            $modalContent = bsModal.$modalContent,
+            $modalBody    = isExtended ? bsModal.extended.$body : bsModal.$body;
+
+        //Save and remove width and height set direct in css and
+        bsModal.saveWidth  = $modalDialog.css('width');
+        $modalDialog.css('width', '');
+        bsModal.saveHeight = $modalContent.css('height');
+        $modalContent.css('height', '');
+
+        //Save and remove any 'size'-classes
+        bsModal.saveDialogContentClass = $modalDialog.get(0).className;
+        bsModal.saveModalContentClass  = $modalContent.get(0).className;
+        bsModal.saveBodyClass          = $modalBody.get(0).className;
+
+        let classNames = [
+                'modal-fixed-height',
+                'modal-flex-height',
+                'modal-flex-width',
+                'modal-extra-width',
+                'modal-mega-width',
+                'modal-full-width',
+            ].join(' ');
+
+        $modalDialog.removeClass(classNames);
+        $modalContent.removeClass(classNames);
+        $modalBody.removeClass(classNames);
+
+        //Set new classes to make size = full screen
+        $modalDialog.addClass ('modal-max-width modal-full-screen modal-full-screen-with-border');
+        $modalContent.addClass('modal-flex-height');
+        $modalContent.addClass('modal-' + (isExtended ? 'extended' : 'normal') + '-always-max-height');
+
+        $modalBody.addClass   ('modal-body-always-max-height');
+
+        //Save data-relativeHeightOptions from modal-content and set new with no margin
+        bsModal.save_relativeHeightOptions = $modalContent.data('relativeHeightOptions') || {};
+
+        let newData = {};
+        newData[MODAL_SIZE_NORMAL] = newData[MODAL_SIZE_EXTENDED] = {  relativeHeightOffset: 0 };
+        $modalContent.data('relativeHeightOptions', newData);
+        adjustModalMaxHeight( $modalContent );
+
+        $modalContent.modernizrOn('modal-set-to-full-screen');
+
+        bsModal.isFullScreenMode = true;
+    };
+
+
+    $.fn._bsModalFullScreenOff = function(){
+        let bsModal       = this.bsModal,
+            $modalDialog  = bsModal.$modalDialog,
+            isExtended    = $modalDialog.hasClass('modal-full-screen-at-extended'),
+            $modalContent = bsModal.$modalContent,
+            $modalBody    = isExtended ? bsModal.extended.$body : bsModal.$body;
+
+        //Reset original size-classes
+        $modalDialog.get(0).className   = bsModal.saveDialogContentClass;
+        $modalContent.get(0).className  = bsModal.saveModalContentClass;
+        $modalBody.get(0).className     = bsModal.saveBodyClass;
+
+        //Reset data-relativeHeightOptions
+        $modalContent.data('relativeHeightOptions', bsModal.save_relativeHeightOptions);
+        adjustModalMaxHeight( $modalContent );
+
+        //Reset original width and height set direct in css
+        $modalDialog.css('width',   bsModal.saveWidth || '');
+        $modalContent.css('height', bsModal.saveHeight || '');
+
+        $modalContent.modernizrOff('modal-set-to-full-screen');
+
+        bsModal.isFullScreenMode = false;
+    };
+
+
+
 
 /* TODO: animate changes in height and width - Use Bootstrtap 5 collaps
        var $this = this.bsModal.$container,
@@ -65511,17 +65705,34 @@ jquery-bootstrap-modal-promise.js
              (options.removeOnClose === undefined) )
             options.remove = !!options.defaultRemoveOnClose || !!options.defaultRemove;
 
-        //Set options for full screen with border
-        if (options.fullScreenWithBorder)
-            options.fullScreen = true;
+        //Prevent allow-full-screen if already set
+        if (options.fullScreen || options.fullScreenWithBorder)
+            options.allowFullScreen = false;
 
-        //Set options for full screen
-        if (options.fullScreen){
-            options.maxWidth             = true;
-            options.alwaysMaxHeight      = true;
-            options.relativeHeightOffset = 0;
+
+
+        function adjustFullScreenOptions( opt, defaultOpt={} ){
+            if (!opt) return;
+            ['fullScreenWithBorder', 'fullScreen'].forEach( id => {
+                if (opt[id] === undefined)
+                    opt[id] = defaultOpt[id] || false;
+            });
+            if (opt.fullScreenWithBorder)
+                opt.fullScreen = true;
+
+            //Set options for full screen
+            if (opt.fullScreen){
+                opt.maxWidth             = true;
+                opt.alwaysMaxHeight      = true;
+                opt.relativeHeightOffset = 0;
+            }
         }
 
+        //Set options for full screen with border
+        adjustFullScreenOptions(options);
+        adjustFullScreenOptions(options.minimized, options);
+        adjustFullScreenOptions(options.extended, options);
+        
         //Check $.MODAL_NO_VERTICAL_MARGIN
         if ($.MODAL_NO_VERTICAL_MARGIN){
             options.relativeHeightOffset = 0;
@@ -65544,6 +65755,13 @@ jquery-bootstrap-modal-promise.js
             }
         }
 
+        //If allowFullScreen: Find the largest size-mode and set the differnet class-names etc.
+        if (options.allowFullScreen)
+            options.sizeWithFullScreen = options.extended ? MODAL_SIZE_EXTENDED : MODAL_SIZE_NORMAL;
+
+
+        //Set keepScrollWhenReopen to allow the content to be scrolled back to 0,0 when reopen a modal
+        this.keepScrollWhenReopen = options.keepScrollWhenReopen;
 
         //Create the modal
         $result =
@@ -65561,6 +65779,10 @@ jquery-bootstrap-modal-promise.js
                 ._bsAddBaseClassAndSize( options )
                 .attr( 'role', 'document')
                 .appendTo( $result );
+
+        if (options.allowFullScreen)
+            $modalDialog.addClass('modal-full-screen-at-' + (options.extended ? 'extended' : 'normal') );
+
 
         //Extend with prototype
         $result.extend( bsModal_prototype );
@@ -65594,6 +65816,8 @@ jquery-bootstrap-modal-promise.js
         });
         $result.bsModal = $modalDialog.bsModal;
 
+        $result.bsModal.$modalDialog = $modalDialog;
+
         $result.removeOnClose = options.remove || options.removeOnClose;
 
         if (options.historyList){
@@ -65619,6 +65843,10 @@ jquery-bootstrap-modal-promise.js
                 $result.show();
         }
 
+        //Save some options in bsModal
+        ['noReopenFullScreen'].forEach( id => {
+            $result.bsModal[id] = options[id];
+        }); 
 
         return $result;
     };
@@ -67305,8 +67533,20 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
         maximizeColumn: function(index){ return this.toggleMinimizedColumn(index, true); },
         minimizeColumn: function(index){ return this.toggleMinimizedColumn(index, false); },
         toggleMinimizedColumn: function(index, show){
+            this.columns[index].minimizeTimeoutId = null;
             return this._toggleColumn('minimized', index, show);
         },
+
+        maximizeAllColumns: function(){ return this.toggleMinimizedAllColumns(false); },
+        minimizeAllColumns: function(){ return this.toggleMinimizedAllColumns(true); },
+        toggleMinimizedAllColumns: function(minimize){
+            this.columns.forEach( (columnOptions, index) => {
+                if (columnOptions.minimizable)
+                    this.toggleMinimizedColumn(index, minimize);
+            });
+        },
+
+
 
 
         _toggleColumn: function(id, index, show){
@@ -67438,7 +67678,7 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
                             );
                         }
                     }.bind(this));
-                });
+                }.bind(this));
 
             var column = this._getColumn( sortInfo.column );
 
@@ -67542,6 +67782,7 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
         sortId     = 0;
 
     $.bsTable = function( options ){
+        
         options = $._bsAdjustOptions( options, defaultOptions );
 
         //Fixed first column only needed when horizontal scrolling ( = full width)
@@ -67686,24 +67927,38 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
 
             multiSortList = []{columnIndex, sortIndex} sorted by sortIndex. Is used be each th to define alternative sort-order
         */
+        let anyColumnSortable = false;
         options.columns.forEach( ( columnOptions, index ) => {
-            if (columnOptions.sortable)
+            if (columnOptions.sortable){
                 multiSortList.push( {columnId: columnOptions.id, columnIndex: ''+index, sortIndex: columnOptions.sortIndex });
+                anyColumnSortable = true;
+            }                
         });
         multiSortList.sort(function( c1, c2){ return c1.sortIndex - c2.sortIndex; });
 
         //Create headers
-        if (options.showHeader)
+        if (options.showHeader || anyColumnSortable){
+            let anyColumnMinimizable = false;
+
+
             $table.columns.forEach( (columnOptions, columnIndex) => {
+                if (columnOptions.minimizable)
+                    anyColumnMinimizable = true;
+
+
                 let $th = columnOptions.$th = $('<th/>').appendTo( $tr );
 
-                if (columnOptions.minimizable){
+                if (columnOptions.minimizable)
                     $th
                         .addClass('minimizable clickable')
                         ._bsAddHtml( {icon: columnOptions.minimizedIcon, iconClass: 'show-for-minimized'} )
-                        .on('click', $table.toggleMinimizedColumn.bind($table, columnIndex) );
-                }
-
+                        .on('click', function(columnIndex){
+                            //Delay toggle minimize to allow dbl-click to take over
+                            let column = this.columns[columnIndex];
+                            if (!column.minimizeTimeoutId)
+                                column.minimizeTimeoutId = window.setTimeout(
+                                    this.toggleMinimizedColumn.bind(this, columnIndex), 200 );
+                        }.bind($table, columnIndex) );
 
                 if (columnOptions.sortable){
                     $th
@@ -67743,6 +67998,29 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
 
                 $th._bsAddHtml( columnOptions.header );
             }, this);
+
+
+            if (anyColumnMinimizable && options.showHeader)
+                $tr.on('dblclick', function(){
+                    let minimize = true;
+                    this.columns.forEach( columnOptions => {
+                        if (columnOptions.minimized)
+                            minimize = false;
+
+                        if (columnOptions.minimizeTimeoutId){
+                            window.clearTimeout(columnOptions.minimizeTimeoutId);
+                            columnOptions.minimizeTimeoutId = null;
+                        }
+                    });
+                    this.toggleMinimizedAllColumns( minimize );
+
+                }.bind($table) );
+
+
+
+
+        }
+
 
         if (options.selectable){
             var radioGroupOptions = $.extend( true, {}, options );
