@@ -231,6 +231,16 @@
         });
     };
 
+    nsParameter.findParameter = function(func, onlyType ){
+        let result = null;
+        $.each( nsParameter.parameters, (id, parameter) => {
+            if ( (!onlyType || (parameter.type == onlyType)) && func(parameter)){
+                result = parameter;
+                return false;
+            }
+        });
+        return result;
+    };
 
 
     //Load parameter
