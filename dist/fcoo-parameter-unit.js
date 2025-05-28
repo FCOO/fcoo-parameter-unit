@@ -254,12 +254,19 @@
             //Link parameters to its vector-components
             $.each(nsParameter, (pId, param) => {
                 if (param.type == 'vector'){
+                    param.eastward_northward_id = [];
                     param.eastward_northward.forEach( (id, index) => {
                         param.eastward_northward[index] = nsParameter[id];
+                        param.eastward_northward_id.push(id);
                     });
+                    param.eastward_northward_id = param.eastward_northward_id.join(':');
+
+                    param.speed_direction_id = [];
                     param.speed_direction.forEach( (id, index) => {
                         param.speed_direction[index] = nsParameter[id];
+                        param.speed_direction_id.push(id);
                     });
+                    param.speed_direction_id = param.speed_direction_id.join(':');
                 }
 
                 //If no unit is given => use speed-unit or east-unit
