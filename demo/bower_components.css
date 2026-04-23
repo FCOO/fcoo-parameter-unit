@@ -733,7 +733,7 @@ html.mouse-hover .base-slider-container.round.active .handle:hover, html.mouse-h
   margin-top: 8.2285714286px;
 }
 
-.base-slider-container {
+.base-slider-container:not(.handle-is-fixed) {
   width: calc(100% - 24px);
   margin-left: 12px !important;
   margin-right: 12px !important;
@@ -1002,6 +1002,17 @@ Bootstrap default = normal size
 Accordion
 ***********************************************/
 /***********************************************
+Grid columns
+Set the number of columns and specify the width of the gutters.
+
+$grid-columns:                12 !default;
+$grid-gutter-width:           1.5rem !default;
+$grid-row-columns:            6 !default;
+
+// Container padding
+$container-padding-x: $grid-gutter-width !default;
+***********************************************/
+/***********************************************
 Card
 ***********************************************/
 /***********************************************
@@ -1102,6 +1113,11 @@ Modal
 /***********************************************
 Button And Modal
 Opacity for semi-transparent and transparent content using color-mix
+************************************************/
+/***********************************************
+$type-2-alert-color
+Conections between "type" and Bootstrap color-class-names
+Used in _noty.scss and _modal.scss
 ************************************************/
 :root,
 [data-bs-theme=light] {
@@ -1619,6 +1635,10 @@ legend + * {
   -webkit-appearance: textfield;
   outline-offset: -2px;
 }
+[type=search]::-webkit-search-cancel-button {
+  cursor: pointer;
+  filter: grayscale(1);
+}
 
 /* rtl:raw:
 [type="tel"],
@@ -1778,7 +1798,7 @@ progress {
 .container-lg,
 .container-md,
 .container-sm {
-  --bs-gutter-x: 1.5rem;
+  --bs-gutter-x: 0.5em;
   --bs-gutter-y: 0;
   width: 100%;
   padding-right: calc(var(--bs-gutter-x) * 0.5);
@@ -1822,7 +1842,7 @@ progress {
 }
 
 .row {
-  --bs-gutter-x: 1.5rem;
+  --bs-gutter-x: 0.5em;
   --bs-gutter-y: 0;
   display: flex;
   flex-wrap: wrap;
@@ -5364,7 +5384,7 @@ textarea.form-control-lg {
   --bs-card-color: ;
   --bs-card-bg: var(--bs-body-bg);
   --bs-card-img-overlay-padding: 1rem;
-  --bs-card-group-margin: 0.75rem;
+  --bs-card-group-margin: 0.25em;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -5510,24 +5530,24 @@ textarea.form-control-lg {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
-  .card-group > .card:not(:last-child) .card-img-top,
-  .card-group > .card:not(:last-child) .card-header {
+  .card-group > .card:not(:last-child) > .card-img-top,
+  .card-group > .card:not(:last-child) > .card-header {
     border-top-right-radius: 0;
   }
-  .card-group > .card:not(:last-child) .card-img-bottom,
-  .card-group > .card:not(:last-child) .card-footer {
+  .card-group > .card:not(:last-child) > .card-img-bottom,
+  .card-group > .card:not(:last-child) > .card-footer {
     border-bottom-right-radius: 0;
   }
   .card-group > .card:not(:first-child) {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
-  .card-group > .card:not(:first-child) .card-img-top,
-  .card-group > .card:not(:first-child) .card-header {
+  .card-group > .card:not(:first-child) > .card-img-top,
+  .card-group > .card:not(:first-child) > .card-header {
     border-top-left-radius: 0;
   }
-  .card-group > .card:not(:first-child) .card-img-bottom,
-  .card-group > .card:not(:first-child) .card-footer {
+  .card-group > .card:not(:first-child) > .card-img-bottom,
+  .card-group > .card:not(:first-child) > .card-footer {
     border-bottom-left-radius: 0;
   }
 }
@@ -5708,7 +5728,7 @@ textarea.form-control-lg {
   padding: 1.25rem 1rem;
 }
 
-.alert-primary, .noty_theme__jquery-bootstrap.noty_type__alert {
+.alert-primary {
   --bs-alert-color: var(--bs-primary-text-emphasis);
   --bs-alert-bg: var(--bs-primary-bg-subtle);
   --bs-alert-border-color: var(--bs-primary-border-subtle);
@@ -5722,35 +5742,35 @@ textarea.form-control-lg {
   --bs-alert-link-color: var(--bs-secondary-text-emphasis);
 }
 
-.alert-success, .noty_theme__jquery-bootstrap.noty_type__success {
+.alert-success, .noty_theme__jquery-bootstrap.noty_type__success, .input-group-container.has-alert-background.noty_theme__jquery-bootstrap.noty_type__success, .input-group-container.has-alert-background.alert-success {
   --bs-alert-color: var(--bs-success-text-emphasis);
   --bs-alert-bg: var(--bs-success-bg-subtle);
   --bs-alert-border-color: var(--bs-success-border-subtle);
   --bs-alert-link-color: var(--bs-success-text-emphasis);
 }
 
-.alert-info, .noty_theme__jquery-bootstrap.noty_type__info {
+.alert-info, .noty_theme__jquery-bootstrap.noty_type__info, .input-group-container.has-alert-background.noty_theme__jquery-bootstrap.noty_type__info, .input-group-container.has-alert-background.alert-info {
   --bs-alert-color: var(--bs-info-text-emphasis);
   --bs-alert-bg: var(--bs-info-bg-subtle);
   --bs-alert-border-color: var(--bs-info-border-subtle);
   --bs-alert-link-color: var(--bs-info-text-emphasis);
 }
 
-.alert-warning, .noty_theme__jquery-bootstrap.noty_type__warning {
+.alert-warning, .noty_theme__jquery-bootstrap.noty_type__warning, .input-group-container.has-alert-background.noty_theme__jquery-bootstrap.noty_type__warning, .input-group-container.has-alert-background.alert-warning {
   --bs-alert-color: var(--bs-warning-text-emphasis);
   --bs-alert-bg: var(--bs-warning-bg-subtle);
   --bs-alert-border-color: var(--bs-warning-border-subtle);
   --bs-alert-link-color: var(--bs-warning-text-emphasis);
 }
 
-.alert-danger, .noty_theme__jquery-bootstrap.noty_type__error, form.form-validation .invalid-tooltip {
+.alert-danger, .noty_theme__jquery-bootstrap.noty_type__error, form.form-validation .invalid-tooltip, .input-group-container.has-alert-background.alert-error {
   --bs-alert-color: var(--bs-danger-text-emphasis);
   --bs-alert-bg: var(--bs-danger-bg-subtle);
   --bs-alert-border-color: var(--bs-danger-border-subtle);
   --bs-alert-link-color: var(--bs-danger-text-emphasis);
 }
 
-.alert-light, .noty_theme__jquery-bootstrap.noty_type__help {
+.alert-light, .noty_theme__jquery-bootstrap.noty_type__help, .input-group-container.has-alert-background.alert-help {
   --bs-alert-color: var(--bs-light-text-emphasis);
   --bs-alert-bg: var(--bs-light-bg-subtle);
   --bs-alert-border-color: var(--bs-light-border-subtle);
@@ -6222,7 +6242,7 @@ textarea.form-control-lg {
   --bs-toast-zindex: 1090;
   --bs-toast-padding-x: 0.75rem;
   --bs-toast-padding-y: 0.5rem;
-  --bs-toast-spacing: 1.5rem;
+  --bs-toast-spacing: 0.5em;
   --bs-toast-max-width: 350px;
   --bs-toast-font-size: 0.875rem;
   --bs-toast-color: ;
@@ -7347,6 +7367,10 @@ textarea.form-control-lg {
 .visually-hidden:not(caption),
 .visually-hidden-focusable:not(:focus):not(:focus-within):not(caption) {
   position: absolute !important;
+}
+.visually-hidden *,
+.visually-hidden-focusable:not(:focus):not(:focus-within) * {
+  overflow: hidden !important;
 }
 
 .stretched-link::after {
@@ -13584,6 +13608,63 @@ Common classes for differnet elements
 STYLE FOR DIFFERENT ELEMENTS
 *************************************************/
 /************************************************************
+Icon
+Classes for special BS icons = colored icon using Bootstrap alert colors
+************************************************************/
+i[class*=bs-icon-front-color-], i[class*=bs-icon-back-color-] {
+  --icon-bs-color: inherit;
+  color: var(--icon-bs-color);
+}
+
+i.bs-icon-front-color-success {
+  --icon-bs-color: var(--bs-success-text-emphasis);
+}
+
+i.bs-icon-back-color-success {
+  --icon-bs-color: var(--bs-success-bg-subtle);
+}
+
+i.bs-icon-front-color-alert {
+  --icon-bs-color: var(--bs-alert-text-emphasis);
+}
+
+i.bs-icon-back-color-alert {
+  --icon-bs-color: var(--bs-alert-bg-subtle);
+}
+
+i.bs-icon-front-color-warning {
+  --icon-bs-color: var(--bs-warning-text-emphasis);
+}
+
+i.bs-icon-back-color-warning {
+  --icon-bs-color: var(--bs-warning-bg-subtle);
+}
+
+i.bs-icon-front-color-error {
+  --icon-bs-color: var(--bs-danger-text-emphasis);
+}
+
+i.bs-icon-back-color-error {
+  --icon-bs-color: var(--bs-danger-bg-subtle);
+}
+
+i.bs-icon-front-color-info {
+  --icon-bs-color: var(--bs-info-text-emphasis);
+}
+
+i.bs-icon-back-color-info {
+  --icon-bs-color: var(--bs-info-bg-subtle);
+}
+
+i.bs-icon-front-color-help {
+  --icon-bs-color: var(--bs-light-text-emphasis);
+}
+
+i.bs-icon-back-color-help {
+  --icon-bs-color: var(--bs-light-bg-subtle);
+}
+
+/************************************************************
 TEXT
 
 Additional classes for text
@@ -13619,6 +13700,19 @@ Bootstrap allready have the following classes
 .fst-normal     Text with normal font style>
 
 */
+:root {
+  --bs-alert-text-emphasis: rgb(101.2, 50.4, 8);
+  --bs-alert-bg-subtle: rgb(254.6, 229.2, 208);
+  --bs-alert-border-subtle: tint-color #fd7e14, 60%;
+}
+
+.alert-alert, .noty_theme__jquery-bootstrap.noty_type__alert, .input-group-container.has-alert-background.noty_theme__jquery-bootstrap.noty_type__alert, .input-group-container.has-alert-background.alert-alert {
+  --bs-alert-color: rgb(101.2, 50.4, 8);
+  --bs-alert-bg: rgb(254.6, 229.2, 208);
+  --bs-alert-border-color: tint-color #fd7e14, 60%;
+  --bs-alert-link-color: rgb(101.2, 50.4, 8);
+}
+
 .opacity-0 {
   opacity: 0;
 }
@@ -13732,6 +13826,10 @@ Bootstrap allready have the following classes
 
 .text-checked, .text-active {
   color: rgb(30, 144, 255);
+}
+
+.text-alert {
+  color: #fd7e14;
 }
 
 /************************************************************
@@ -14327,6 +14425,16 @@ HEADER-CONTENT
   --icon-bg: #ffc107;
   --icon-hover-bg: rgb(236.5, 177.375, 0);
   --icon-active-bg: rgb(211, 158.25, 0);
+}
+.header-content .header-icon-container.with-square-icons .header-icon.header-icon-alert {
+  --icon-bg: #fd7e14;
+  --icon-hover-bg: rgb(245.4113924051, 112.7848101266, 2.0886075949);
+  --icon-active-bg: rgb(220.1265822785, 101.164556962, 1.8734177215);
+}
+.header-content .header-icon-container.with-square-icons .header-icon.header-icon-error {
+  --icon-bg: #dc3545;
+  --icon-hover-bg: rgb(210.9493670886, 36.5506329114, 53.2594936709);
+  --icon-active-bg: rgb(189.2151898734, 32.7848101266, 47.7721518987);
 }
 .header-content .header-icon-container.with-square-icons .header-icon.header-icon-selected {
   --icon-bg: rgb(30, 144, 255);
@@ -15022,6 +15130,16 @@ div.modal-header-icon-full-screen-off {
   display: initial !important;
 }
 
+/****************************************************
+Spedcial classes for header-icons up and down to be used as "radio" (one on at the time)
+****************************************************/
+.modal-header-icon-up-and-down-as-radio .modal-header-icon-up-on .hide-for-modal-header-icon-up-on {
+  display: none !important;
+}
+.modal-header-icon-up-and-down-as-radio .no-modal-header-icon-up-on .show-for-modal-header-icon-up-on {
+  display: none !important;
+}
+
 /************************************************************
 MODAL-BACKDROP
 
@@ -15186,6 +15304,18 @@ form.form-xs, .input-group-container-xs, .input-group-xs {
   margin-bottom: var(--bs-input-padding-y);
   padding-bottom: var(--bs-input-padding-y);
   border-bottom: var(--bs-border-width) solid var(--jb-structure-border-color);
+}
+
+/************************************************************
+Style for different background/text-color a la Bootsrap alert
+************************************************************/
+/****************************************************
+Use Bootstrap alert-COLOR for different types
+****************************************************/
+.input-group-container.has-alert-background .input-group {
+  color: var(--bs-alert-color);
+  background-color: var(--bs-alert-bg);
+  border-color: var(--bs-alert-color);
 }
 
 /************************************************************
@@ -16192,12 +16322,12 @@ the complete scss for noty is copyed and modified
   display: none;
 }
 
-.noty_theme__jquery-bootstrap.noty_type__alert {
-  --bs-alert-bg-flash: var(--bs-primary);
-}
-
 .noty_theme__jquery-bootstrap.noty_type__success {
   --bs-alert-bg-flash: var(--bs-success);
+}
+
+.noty_theme__jquery-bootstrap.noty_type__alert {
+  --bs-alert-bg-flash: var(--bs-alert);
 }
 
 .noty_theme__jquery-bootstrap.noty_type__warning {
@@ -16431,6 +16561,7 @@ CAROUSEL
   max-width: 100%;
   display: flex;
   flex-direction: row;
+  align-items: center;
   font-size: var(--bs-footer-font-size);
   --bs-footer-font-size: 0.75rem;
   --bs-footer-padding-y: 0.25rem;

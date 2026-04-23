@@ -64,7 +64,7 @@
                              fcoo.parameter.getParameter("wind_speed").format(1.23, true, "kn") );
                 console.log("i18next.t('unit:1') => ", i18next.t('unit:1'));
 
-                document.write('<table border="1"><tR><th>Id</th><th>Navn og enhed</th><th>Name and Unit</th><th>12.345678</th><th>As SI-unit</th></tr>');
+                document.write('<table border="1"><tr><th>Id</th><th>Navn og enhed</th><th>Name and Unit</th><th>ShortName and prefix</th><th>12.345678</th><th>As SI-unit</th></tr>');
                 $.each(fcoo.parameter, function(id, param){
                     if (param.type){
                         document.write('<tr><td>'+param.id+'</td>');
@@ -72,6 +72,7 @@
                         document.write('<td>'+ param.translate(true)+'</td>');
                         i18next.changeLanguage('en');
                         document.write('<td>'+ param.translate(true)+'</td>');
+                        document.write('<td>'+ param._getName({inclUnit: true,useShortName: true, prefix:'Prefix'}).en+'</td>');
                         document.write('<td>'+ param.format(12.345678, true)+'</td>');
                         if (param.unit.SI_unit)
                             document.write('<td>'+ param.format(12.345678, true, param.unit.SI_unit)+'</td>');
