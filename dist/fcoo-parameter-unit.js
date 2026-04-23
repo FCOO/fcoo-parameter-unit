@@ -171,13 +171,13 @@
 
     nsParameter.Parameter = Parameter;
     nsParameter.Parameter.prototype = {
-        getName: function(inclUnit, z, useUnit, useShortName, prefix ){
+        getName: function(inclUnit, z, useUnit, useShortName, postfix ){
             return this._getName({
                 inclUnit    : inclUnit,
                 z           : z,
                 useUnit     : useUnit,
                 useShortName: useShortName,
-                prefix      : prefix
+                postfix     : postfix
             });
         },
 
@@ -185,7 +185,7 @@
             let o       = options,
                 result  = {},
                 z       = o.z      ? ns.ajdustLangName(o.z)    : null,
-                prefix  = o.prefix ? ns.ajdustLangName(o.prefix) : null,
+                postfix  = o.postfix ? ns.ajdustLangName(o.postfix) : null,
                 useUnit = nsParameter.getUnit(o.useUnit || this.unit);
 
             $.each(o.useShortName ? this.shortName : this.name, (lang, text) => {
@@ -193,8 +193,8 @@
                 if (z)
                     langText = langText + '&nbsp;(' + z[lang] + ')';
 
-                if (prefix)
-                    langText = langText + '&nbsp;(' + prefix[lang] + ')';
+                if (postfix)
+                    langText = langText + '&nbsp;(' + postfix[lang] + ')';
 
                 if (o.inclUnit)
                     langText = langText + '&nbsp;[' + useUnit.name[lang] + ']';
