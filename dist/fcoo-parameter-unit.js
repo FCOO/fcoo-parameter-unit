@@ -119,7 +119,8 @@
 
     //Load units
     ns.promiseList.append({
-        fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_unit.json'},
+        fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_unit.yaml'},
+        format:'yaml',
         resolve : function(data){
             $.each(data, (unit_id, options) => {
                 nsUnit.units[unit_id] = nsUnit[unit_id] = new nsParameter.Unit(unit_id, options);
@@ -259,7 +260,8 @@
 
     //Load parameter
     ns.promiseList.append({
-        fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_parameter.json'},
+        fileName: {subDir: 'parameter-unit', fileName: 'cf_sn_parameter.yaml'},
+        format  :'yaml',
         resolve : function(data){
             $.each(data, (parameter_id, options) => {
                 nsParameter.parameters[parameter_id] = nsParameter[parameter_id] = new nsParameter.Parameter(parameter_id, options);

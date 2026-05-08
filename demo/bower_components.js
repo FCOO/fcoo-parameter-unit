@@ -79167,7 +79167,7 @@ return index;
     ***********************************************************/
     ns.ajdustLangName = function(name){
         var result = typeof name == 'string' ? {en: name} : name,
-            defaultName = result['en'] || result['da'];
+            defaultName = result['en'] || result['da'] || '';
 
         languages.forEach( lang => result[lang] = result[lang] || defaultName );
         return result;
